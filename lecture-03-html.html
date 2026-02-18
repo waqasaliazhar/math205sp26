@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math 205 — Lecture 03: Functions, Preimages, Composition, Denumerable Sets</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{--blue:#2563eb;--blue-bg:#dbeafe;--green:#059669;--green-bg:#d1fae5;--orange:#d97706;--orange-bg:#fef3c7;--red:#dc2626;--red-bg:#fee2e2;--violet:#7c3aed;--violet-bg:#ede9fe;--gray:#6b7280;--dark:#1f2937;--light:#f9fafb}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--dark);background:var(--light);line-height:1.7;max-width:860px;margin:0 auto;padding:20px 24px 60px}
+h1{font-size:2em;text-align:center;margin-bottom:4px}
+h2.subtitle{font-size:1.2em;text-align:center;color:var(--blue);margin-bottom:4px;font-weight:600}
+.date{text-align:center;color:var(--gray);font-size:.9em}
+.divider{border:none;border-top:2px solid #d1d5db;margin:16px auto;width:50%}
+h2{font-size:1.5em;margin:36px 0 12px;color:var(--dark);border-bottom:2px solid #e5e7eb;padding-bottom:4px}
+h3{font-size:1.15em;margin:20px 0 8px;color:#374151}
+p{margin:8px 0}
+.box{border-radius:8px;margin:20px 0;overflow:hidden;border-width:2px;border-style:solid}
+.box-title{color:#fff;padding:8px 16px;font-weight:700;font-size:.9em}
+.box-body{padding:14px 18px}
+.def{border-color:var(--blue);background:var(--blue-bg)}.def .box-title{background:var(--blue)}
+.thm{border-color:var(--green);background:var(--green-bg)}.thm .box-title{background:var(--green)}
+.ex{border-color:var(--orange);background:var(--orange-bg)}.ex .box-title{background:var(--orange)}
+.note{border-color:var(--red);background:var(--red-bg)}.note .box-title{background:var(--red)}
+.exer{border-color:var(--violet);background:var(--violet-bg)}.exer .box-title{background:var(--violet)}
+.proof-box{background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;padding:16px 20px;margin:16px 0}
+.proof-toggle{cursor:pointer;user-select:none;color:var(--blue);font-weight:700;display:flex;align-items:center;gap:6px}
+.proof-toggle:hover{color:#1d4ed8}
+.proof-toggle .arrow{transition:transform .25s;display:inline-block}
+.proof-toggle.open .arrow{transform:rotate(90deg)}
+.proof-content{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.proof-content.show{max-height:8000px}
+.highlight{background:rgba(251,191,36,.25);padding:2px 6px;border-radius:4px}
+.center{text-align:center;margin:12px 0}
+table{border-collapse:collapse;margin:12px auto}
+th,td{border:1px solid #d1d5db;padding:6px 12px;text-align:center;font-size:.9em}
+th{background:#e5e7eb;font-weight:700}
+.tag{display:inline-block;font-size:.75em;padding:2px 8px;border-radius:10px;font-weight:600;margin:0 2px}
+.tag-yes{background:#d1fae5;color:#065f46}.tag-no{background:#fee2e2;color:#991b1b}
+.interactive-area{background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:20px;margin:20px 0;text-align:center}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:.85em;transition:all .2s}
+button:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.btn-blue{background:var(--blue);color:#fff}.btn-blue.active{background:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.3)}
+.btn-pill{border-radius:20px;padding:6px 16px}
+.btn-sm{padding:4px 10px;font-size:.8em;border-radius:50%;width:32px;height:32px}
+.prop-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.8em;font-weight:600;margin:3px}
+.prop-yes{background:#d1fae5;color:#065f46}.prop-no{background:#fee2e2;color:#991b1b}
+svg text{font-family:Georgia,serif}
+.fn-container{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:16px 0}
+.fn-card{border:2px solid #e5e7eb;border-radius:10px;padding:14px;width:200px;text-align:center;cursor:pointer;transition:all .25s}
+.fn-card:hover,.fn-card.active{border-color:var(--blue);background:var(--blue-bg);box-shadow:0 2px 10px rgba(37,99,235,.12)}
+.fn-card h4{margin:0 0 6px;font-size:.85em}
+.chain-step{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:8px;font-size:.85em;margin:3px;border:2px solid #e5e7eb;transition:all .3s;cursor:pointer}
+.chain-step:hover,.chain-step.active{background:var(--blue-bg);border-color:var(--blue)}
+.chain-reason{font-size:.8em;color:var(--gray);font-style:italic}
+/* Composition animation */
+.comp-stage{display:flex;justify-content:center;align-items:center;gap:20px;margin:16px 0;flex-wrap:wrap}
+.comp-set{border:2px solid;border-radius:12px;padding:12px 16px;min-width:80px;text-align:center}
+.comp-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin:2px}
+/* Enumeration grid */
+.enum-grid{display:grid;gap:2px;justify-content:center;margin:12px 0}
+.enum-cell{width:36px;height:28px;display:flex;align-items:center;justify-content:center;font-size:.7em;border-radius:4px;transition:all .4s;cursor:pointer}
+.enum-cell:hover{transform:scale(1.15);z-index:1}
+/* Interleave animation */
+.interleave-row{display:flex;align-items:center;justify-content:center;gap:4px;margin:4px 0;min-height:32px;flex-wrap:wrap}
+.il-item{padding:3px 10px;border-radius:6px;font-size:.8em;font-weight:600;transition:all .3s}
+@media(max-width:600px){body{padding:12px 14px}h1{font-size:1.5em}.fn-card{width:160px}}
+</style>
+</head>
+<body>
+
+<h1>Math 205: Real Analysis</h1>
+<h2 class="subtitle">Lecture 03 — Functions, Preimages, Composition, and Denumerable Sets</h2>
+<p class="date">Lecture Notes</p>
+<hr class="divider">
+
+<!-- ==================== SECTION 1: Injectivity ==================== -->
+<h2>1 &nbsp; Injective Functions</h2>
+
+<div class="box def"><div class="box-title">Definition: Injective Function</div><div class="box-body">
+<p>\(f : A \to B\) is <strong>injective</strong> (one-to-one) if distinct inputs give distinct outputs:</p>
+$x \ne y \implies f(x) \ne f(y)$
+</div></div>
+
+<div class="box note"><div class="box-title">Proof Strategy: Use the Contrapositive</div><div class="box-body">
+<p>The contrapositive is logically equivalent and much easier to work with:</p>
+$$f(x) = f(y) \implies x = y$$
+<p>To prove injectivity: <strong>assume</strong> \(f(x) = f(y)\) and <strong>deduce</strong> \(x = y\).</p>
+</div></div>
+
+<h3>Interactive: Logical Equivalence Truth Table</h3>
+<p>Click rows to highlight. The blue columns confirm \(p \Rightarrow q \equiv \neg q \Rightarrow \neg p\):</p>
+<div class="interactive-area">
+<table id="ttContra">
+<thead><tr><th>\(p\)</th><th>\(q\)</th><th style="background:var(--blue-bg)">\(p \Rightarrow q\)</th><th style="background:var(--blue-bg)">\(\neg q \Rightarrow \neg p\)</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+
+<!-- ==================== SECTION 2: Surjectivity ==================== -->
+<h2>2 &nbsp; Surjective Functions</h2>
+
+<div class="box def"><div class="box-title">Definition: Surjective Function</div><div class="box-body">
+<p>\(f : A \to B\) is <strong>surjective</strong> (onto) if every element of \(B\) is hit:</p>
+$$\forall y \in B, \;\exists x \in A \text{ such that } f(x) = y$$
+</div></div>
+
+<div class="box note"><div class="box-title">Proof Strategy for Surjectivity</div><div class="box-body">
+<p>Take an <strong>arbitrary</strong> \(y \in B\) and explicitly <strong>construct</strong> an \(x \in A\) with \(f(x) = y\).</p>
+</div></div>
+
+<!-- ==================== SECTION 3: Examples ==================== -->
+<h2>3 &nbsp; Examples</h2>
+
+<div class="box ex"><div class="box-title">Interactive: Is \(f(x) = x^2\) Injective or Surjective?</div><div class="box-body">
+<p>Explore \(f : \mathbb{R} \to \mathbb{R}\), \(f(x) = x^2\). Enter a \(y\)-value to check surjectivity, or two \(x\)-values to check injectivity:</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <canvas id="parabolaCanvas" width="360" height="260" style="max-width:100%;border:1px solid #e5e7eb;border-radius:8px"></canvas>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+    <div>
+      <strong style="font-size:.85em">Check injectivity:</strong><br>
+      <label style="font-size:.85em">\(x_1\)=<input type="number" id="injX1" value="1" style="width:50px;padding:2px 6px;border:1px solid #ccc;border-radius:4px" onchange="drawParabola()"></label>
+      <label style="font-size:.85em">\(x_2\)=<input type="number" id="injX2" value="-1" style="width:50px;padding:2px 6px;border:1px solid #ccc;border-radius:4px" onchange="drawParabola()"></label>
+    </div>
+    <div>
+      <strong style="font-size:.85em">Check surjectivity:</strong><br>
+      <label style="font-size:.85em">\(y\)=<input type="number" id="surY" value="-1" style="width:50px;padding:2px 6px;border:1px solid #ccc;border-radius:4px" onchange="drawParabola()"></label>
+    </div>
+  </div>
+  <p id="parabolaInfo" style="font-size:.9em;margin-top:8px"></p>
+</div>
+</div></div>
+
+<div class="box ex"><div class="box-title">Example: \(f(n) = 2n - 2\) from \(\mathbb{N}\) to \(\mathbb{E}\)</div><div class="box-body">
+<p>\(f : \mathbb{N} \to \mathbb{E}\) where \(\mathbb{E} = \{0,2,4,6,\ldots\}\). This is a <strong>bijection</strong>!</p>
+<p><span class="prop-badge prop-yes">✓ Injective</span> \(2n_1 - 2 = 2n_2 - 2 \implies n_1 = n_2\)</p>
+<p><span class="prop-badge prop-yes">✓ Surjective</span> Any \(2m \in \mathbb{E}\) equals \(f(m+1)\)</p>
+<p>This shows \(\mathbb{N}\) and \(\mathbb{E}\) have the "same size" — surprising for infinite sets!</p>
+</div></div>
+
+<!-- ==================== SECTION 4: Cardinality ==================== -->
+<h2>4 &nbsp; Finite Sets and Cardinality</h2>
+
+<div class="box thm"><div class="box-title">Theorem: Size Constraints</div><div class="box-body">
+<p>Injection \(f: A \to B \implies |A| \leq |B|\). &nbsp; Surjection \(\implies |A| \geq |B|\). &nbsp; Bijection \(\implies |A| = |B|\).</p>
+</div></div>
+
+<div class="box note"><div class="box-title">Warning: Same Size ≠ Bijective</div><div class="box-body">
+<p>Even if \(|A| = |B|\), a specific function between them might not be bijective unless explicitly verified.</p>
+</div></div>
+
+<!-- ==================== SECTION 5: Operations ==================== -->
+<h2>5 &nbsp; Operations on Functions</h2>
+
+<div class="box def"><div class="box-title">Definition: Arithmetic of Functions</div><div class="box-body">
+<p>Given \(f, g : A \to \mathbb{R}\):</p>
+$$(f+g)(x) = f(x)+g(x), \quad (fg)(x) = f(x)g(x), \quad \left(\frac{f}{g}\right)(x) = \frac{f(x)}{g(x)} \;\;(g(x)\neq 0)$$
+</div></div>
+
+<!-- ==================== SECTION 6: Images and Preimages ==================== -->
+<h2>6 &nbsp; Images and Preimages</h2>
+
+<div class="box def"><div class="box-title">Definition: Image and Preimage</div><div class="box-body">
+<p><strong>Direct image:</strong> \(f(E) = \{f(x) : x \in E\}\)</p>
+<p><strong>Preimage:</strong> \(f^{-1}(S) = \{x \in A : f(x) \in S\}\)</p>
+<p>Note: \(f^{-1}\) is defined for <em>any</em> function, even non-invertible ones.</p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Interactive: Image vs Preimage of Image</div><div class="box-body">
+<p>For \(f(x) = x^2\), explore how \(f(E)\) and \(f^{-1}(f(E))\) can differ:</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+    <label>\(E = [0,\)</label>
+    <input type="range" id="imgSlider" min="1" max="4" step="0.5" value="2" oninput="updateImgExample()" style="width:120px">
+    <label id="imgB">2</label><label>\(]\)</label>
+  </div>
+  <canvas id="imgCanvas" width="360" height="220" style="max-width:100%;border:1px solid #e5e7eb;border-radius:8px"></canvas>
+  <p id="imgInfo" style="font-size:.9em;margin-top:8px"></p>
+</div>
+<p>The mismatch occurs because \(f\) is <strong>not injective</strong> — the preimage "picks up extras."</p>
+</div></div>
+
+<h3>6.1 &nbsp; Preimages Preserve Intersections</h3>
+
+<div class="box note"><div class="box-title">Warning: Images Don't Preserve Intersections</div><div class="box-body">
+<p>In general, \(f(A \cap B) \neq f(A) \cap f(B)\).</p>
+<p><strong>Counterexample:</strong> \(f(x) = w\) constant, \(A = \{1,2,3\}\), \(B=\{a,b\}\). Then \(f(A) \cap f(B) = \{w\}\) but \(f(A \cap B) = f(\varnothing) = \varnothing\).</p>
+</div></div>
+
+<div class="box thm"><div class="box-title">Theorem: Preimages Preserve Intersections</div><div class="box-body">
+$$f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B)$$
+</div></div>
+
+<h3>Interactive: Chain of Equivalences Proof</h3>
+<p>Click each step to highlight the logical reasoning:</p>
+<div class="interactive-area" id="chainProof"></div>
+
+<div class="proof-box">
+  <div class="proof-toggle" onclick="toggleProof(this)"><span class="arrow">▶</span> Full formal proof (click to expand)</div>
+  <div class="proof-content">
+    <p style="margin-top:10px"><strong>Part 1:</strong> \(f^{-1}(A \cap B) \subseteq f^{-1}(A) \cap f^{-1}(B)\).</p>
+    <p>Let \(x \in f^{-1}(A \cap B)\). Then \(f(x) \in A \cap B\), so \(f(x) \in A\) and \(f(x) \in B\). Hence \(x \in f^{-1}(A)\) and \(x \in f^{-1}(B)\), giving \(x \in f^{-1}(A) \cap f^{-1}(B)\). ✓</p>
+    <p style="margin-top:10px"><strong>Part 2:</strong> \(f^{-1}(A) \cap f^{-1}(B) \subseteq f^{-1}(A \cap B)\).</p>
+    <p>Let \(x \in f^{-1}(A) \cap f^{-1}(B)\). Then \(f(x) \in A\) and \(f(x) \in B\), so \(f(x) \in A \cap B\), giving \(x \in f^{-1}(A \cap B)\). ✓</p>
+    <p style="margin-top:10px">Both inclusions hold, so \(f^{-1}(A \cap B) = f^{-1}(A) \cap f^{-1}(B)\). □</p>
+  </div>
+</div>
+
+<div class="box exer"><div class="box-title">Exercise</div><div class="box-body">
+<p>Prove: \(f^{-1}(A \cup B) = f^{-1}(A) \cup f^{-1}(B)\).</p>
+<p><em>Hint: Replace ∩ with ∪ and "and" with "or" in the chain of equivalences.</em></p>
+</div></div>
+
+<!-- ==================== SECTION 7: Composition ==================== -->
+<h2>7 &nbsp; Composition of Functions</h2>
+
+<div class="box def"><div class="box-title">Definition: Composition</div><div class="box-body">
+<p>For \(f: A \to B\) and \(g: B \to C\):</p>
+$$(g \circ f)(x) = g(f(x))$$
+</div></div>
+
+<h3>Interactive: Composition Visualizer</h3>
+<p>Watch an element travel through the composition \(g \circ f\):</p>
+<div class="interactive-area">
+  <svg id="compSvg" viewBox="0 0 500 140" width="500" style="max-width:100%"></svg>
+  <div style="margin-top:10px">
+    <button class="btn-blue btn-pill" onclick="animateComp()">▶ Animate</button>
+    <button class="btn-blue btn-pill" style="background:var(--gray)" onclick="resetComp()">↺ Reset</button>
+  </div>
+</div>
+
+<div class="box thm"><div class="box-title">Theorem: Composition of Bijections is Bijective</div><div class="box-body">
+<p>If \(f: A \to B\) and \(g: B \to C\) are bijections, then \(g \circ f : A \to C\) is bijective.</p>
+</div></div>
+
+<div class="proof-box">
+  <div class="proof-toggle" onclick="toggleProof(this)"><span class="arrow">▶</span> Proof (click to expand)</div>
+  <div class="proof-content">
+    <p style="margin-top:10px"><strong>Injective:</strong> Assume \((g \circ f)(x) = (g \circ f)(y)\), i.e. \(g(f(x)) = g(f(y))\).</p>
+    <p>Since \(g\) is injective: \(f(x) = f(y)\). Since \(f\) is injective: \(x = y\). ✓</p>
+    <p style="margin-top:10px"><strong>Surjective:</strong> Let \(c \in C\). Since \(g\) is surjective, \(\exists b \in B\) with \(g(b) = c\). Since \(f\) is surjective, \(\exists a \in A\) with \(f(a) = b\). Then \((g \circ f)(a) = g(f(a)) = g(b) = c\). ✓</p>
+    <p style="margin-top:10px">Both hold, so \(g \circ f\) is bijective. □</p>
+  </div>
+</div>
+
+<div class="box note"><div class="box-title">Warning: Converse Fails!</div><div class="box-body">
+<p>If \(g \circ f\) is bijective, \(f\) and \(g\) need not individually be bijective.</p>
+<p><strong>Example:</strong> \(f:\{1\}\to\{1,2\}\) with \(f(1)=1\), \(g:\{1,2\}\to\{1\}\) with \(g(x)=1\). Then \(g \circ f\) = identity (bijective!), but \(f\) isn't surjective and \(g\) isn't injective.</p>
+</div></div>
+
+<!-- ==================== SECTION 8: Denumerable Sets ==================== -->
+<h2>8 &nbsp; Denumerable Sets</h2>
+
+<div class="box def"><div class="box-title">Definition: Denumerable</div><div class="box-body">
+<p>A set is <strong>denumerable</strong> (countably infinite) if it can be put in bijection with \(\mathbb{N}\). Equivalently, its elements can be listed as a sequence.</p>
+</div></div>
+
+<h3>8.1 &nbsp; \(\mathbb{Z}\) is Denumerable</h3>
+
+<div class="box thm"><div class="box-title">Theorem: \(\mathbb{Z}\) is Denumerable</div><div class="box-body">
+<p>Define \(f: \mathbb{N} \to \mathbb{Z}\) by alternating non-negative and negative integers.</p>
+</div></div>
+
+<h3>Interactive: Interleaving \(\mathbb{Z}\)</h3>
+<p>Watch the natural numbers map to the integers by interleaving:</p>
+<div class="interactive-area">
+  <div class="interleave-row"><strong style="width:30px;color:var(--blue)">ℕ:</strong><span id="ilN"></span></div>
+  <div style="font-size:1.5em;color:var(--gray);margin:4px 0">↓</div>
+  <div class="interleave-row"><strong style="width:30px;color:var(--red)">ℤ:</strong><span id="ilZ"></span></div>
+  <div style="margin-top:10px">
+    <button class="btn-blue btn-pill" onclick="animateInterleave()">▶ Animate</button>
+    <button class="btn-blue btn-pill" style="background:var(--gray)" onclick="resetInterleave()">↺ Reset</button>
+    <span id="ilCount" style="margin-left:12px;font-size:.85em;color:var(--gray)"></span>
+  </div>
+</div>
+
+<h3>8.2 &nbsp; Countability of \(\mathbb{N} \times \mathbb{N}\)</h3>
+
+<div class="box thm"><div class="box-title">Theorem: \(\mathbb{N} \times \mathbb{N}\) is Denumerable</div><div class="box-body">
+<p>We index pairs by the sum \(m + n\). Pairs with the same sum lie on the same diagonal.</p>
+</div></div>
+
+<h3>Interactive: Cantor's Diagonal Enumeration</h3>
+<p>Click <strong>Step</strong> to walk through the enumeration, or <strong>Auto</strong> to watch it animate. Click any cell to see its position:</p>
+<div class="interactive-area">
+  <div id="cantorGrid" style="display:inline-block;margin:8px 0"></div>
+  <div style="margin-top:10px">
+    <button class="btn-blue btn-pill" onclick="cantorStep()">Step →</button>
+    <button class="btn-blue btn-pill" onclick="cantorAuto()">▶ Auto</button>
+    <button class="btn-blue btn-pill" style="background:var(--gray)" onclick="cantorReset()">↺ Reset</button>
+    <span id="cantorCount" style="margin-left:12px;font-size:.9em;font-weight:600"></span>
+  </div>
+  <p id="cantorInfo" style="font-size:.85em;color:var(--gray);margin-top:6px"></p>
+</div>
+
+<div class="box note"><div class="box-title">Key Insight</div><div class="box-body">
+<p>This "zigzag" enumeration shows we can systematically list all pairs — even though \(\mathbb{N} \times \mathbb{N}\) seems "much larger" than \(\mathbb{N}\). The enumeration order is:</p>
+$$(1,1),\;(1,2),\;(2,1),\;(1,3),\;(2,2),\;(3,1),\;(1,4),\;\ldots$$
+</div></div>
+
+<div class="box exer"><div class="box-title">Food for Thought</div><div class="box-body">
+<p>Can you adapt this argument to show \(\mathbb{Q}\) is denumerable?</p>
+<p><em>Hint: Every rational \(p/q\) with \(q \in \mathbb{N}\) corresponds to a pair in \(\mathbb{Z} \times \mathbb{N}\). Discard duplicates.</em></p>
+</div></div>
+
+<!-- ==================== SECTION: Exercises ==================== -->
+<h2>9 &nbsp; Exercises</h2>
+
+<div class="box exer"><div class="box-title">Exercises for Lecture 03</div><div class="box-body">
+<p><strong>Exercise 1.</strong> Prove \(f(x) = 3x - 7\) is both injective and surjective on \(\mathbb{R}\).</p>
+<p><strong>Exercise 2.</strong> Prove or disprove: if \(f\) is injective and \(E \subseteq A\), then \(f^{-1}(f(E)) = E\).</p>
+<p><strong>Exercise 3.</strong> Prove \(f^{-1}(A \cup B) = f^{-1}(A) \cup f^{-1}(B)\).</p>
+<p><strong>Exercise 4.</strong> (a) If \(g \circ f\) is injective, prove \(f\) is injective. (b) If \(g \circ f\) is surjective, prove \(g\) is surjective.</p>
+<p><strong>Exercise 5.</strong> Show \(k(m,n) = (2m-1)\cdot 2^{n-1}\) is a bijection \(\mathbb{N}\times\mathbb{N} \to \mathbb{N}\).</p>
+</div></div>
+
+<hr class="divider">
+<p class="center" style="color:var(--gray);font-size:.85em">Math 205: Real Analysis — Lecture 03</p>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  renderMathInElement(document.body,{delimiters:[
+    {left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},
+    {left:"\\(",right:"\\)",display:false},{left:"$",right:"$",display:false}
+  ]});
+  initAll();
+});
+function initAll(){buildContraTable();drawParabola();updateImgExample();buildChainProof();drawComp();resetInterleave();cantorReset()}
+function toggleProof(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('show')}
+
+// === Contrapositive truth table ===
+function buildContraTable(){
+  let tb=document.querySelector('#ttContra tbody');
+  [[1,1],[1,0],[0,1],[0,0]].forEach(([p,q])=>{
+    let pq=(!p||q)?1:0, nqnp=(!(!q)||(!p))?1:0;
+    // simpler: p=>q same as !p||q; !q=>!p same as q||!p same as !q=>!p
+    let impl=(p&&!q)?0:1;
+    let contra=(!q&&p)?0:1; // same logic
+    let r=document.createElement('tr');
+    r.style.cursor='pointer';
+    let T=v=>`<td>${v?'<span class="tag tag-yes">T</span>':'<span class="tag tag-no">F</span>'}</td>`;
+    let Th=v=>`<td style="background:var(--blue-bg)">${v?'<span class="tag tag-yes">T</span>':'<span class="tag tag-no">F</span>'}</td>`;
+    r.innerHTML=T(p)+T(q)+Th(impl)+Th(contra);
+    r.onclick=()=>{tb.querySelectorAll('tr').forEach(x=>x.style.background='');r.style.background='rgba(251,191,36,.2)'};
+    tb.appendChild(r);
+  });
+}
+
+// === Parabola graph ===
+function drawParabola(){
+  let c=document.getElementById('parabolaCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  let ox=W/2,oy=H-40,sx=50,sy=40;
+  // Axes
+  ctx.strokeStyle='#374151';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(20,oy);ctx.lineTo(W-10,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,H-10);ctx.lineTo(ox,10);ctx.stroke();
+  // Labels
+  ctx.fillStyle='#374151';ctx.font='11px Georgia';
+  ctx.fillText('x',W-15,oy-5);ctx.fillText('y',ox+5,18);
+  for(let x=-3;x<=3;x++){ctx.fillText(x,ox+x*sx-4,oy+14)}
+  for(let y=1;y<=5;y++){ctx.fillText(y,ox+4,oy-y*sy+4);ctx.beginPath();ctx.moveTo(ox-3,oy-y*sy);ctx.lineTo(ox+3,oy-y*sy);ctx.stroke()}
+  // Parabola
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=2.5;ctx.beginPath();
+  for(let px=-3.5;px<=3.5;px+=0.05){let x=ox+px*sx,y=oy-px*px*sy;if(y<5)continue;if(px===-3.5)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
+  ctx.stroke();
+  // Injectivity check
+  let x1=+document.getElementById('injX1').value,x2=+document.getElementById('injX2').value;
+  let y1=x1*x1,y2=x2*x2;
+  ctx.fillStyle='#dc2626';
+  [x1,x2].forEach(xv=>{
+    let px=ox+xv*sx,py=oy-xv*xv*sy;
+    if(py>5&&py<H-10){ctx.beginPath();ctx.arc(px,py,5,0,Math.PI*2);ctx.fill()}
+  });
+  // Horizontal line at y1
+  if(y1===y2&&y1>=0){
+    ctx.strokeStyle='#dc2626';ctx.lineWidth=1;ctx.setLineDash([5,4]);
+    ctx.beginPath();ctx.moveTo(20,oy-y1*sy);ctx.lineTo(W-10,oy-y1*sy);ctx.stroke();
+    ctx.setLineDash([]);
+  }
+  // Surjectivity check
+  let yc=+document.getElementById('surY').value;
+  ctx.strokeStyle='#9ca3af';ctx.lineWidth=1;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(20,oy-yc*sy);ctx.lineTo(W-10,oy-yc*sy);ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#6b7280';ctx.font='10px Georgia';ctx.fillText('y='+yc,W-35,oy-yc*sy-4);
+  // Info
+  let info='';
+  if(x1!==x2&&y1===y2)info+=`<span class="prop-badge prop-no">✗ Not injective</span> f(${x1})=f(${x2})=${y1} but ${x1}≠${x2}. `;
+  else if(x1===x2)info+=`<span style="color:var(--gray)">Same input — try different x values.</span> `;
+  else info+=`<span class="prop-badge prop-yes">✓ These two are fine</span> f(${x1})=${y1}≠${y2}=f(${x2}). <span style="color:var(--gray)">Try x₁=1, x₂=−1!</span> `;
+  if(yc<0)info+=`<span class="prop-badge prop-no">✗ Not surjective</span> No real x with x²=${yc}.`;
+  else info+=`<span class="prop-badge prop-yes">y=${yc} is hit</span> x=±√${yc}≈±${Math.sqrt(yc).toFixed(2)}.`;
+  document.getElementById('parabolaInfo').innerHTML=info;
+}
+
+// === Image/Preimage example ===
+function updateImgExample(){
+  let b=+document.getElementById('imgSlider').value;
+  document.getElementById('imgB').textContent=b;
+  let c=document.getElementById('imgCanvas'),ctx=c.getContext('2d'),W=c.width,H=c.height;
+  ctx.clearRect(0,0,W,H);
+  let ox=W/2,oy=H-30,sx=55,sy=35;
+  // Axes
+  ctx.strokeStyle='#374151';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(10,oy);ctx.lineTo(W-10,oy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(ox,H-10);ctx.lineTo(ox,10);ctx.stroke();
+  ctx.fillStyle='#374151';ctx.font='10px Georgia';
+  for(let x=-3;x<=3;x++){if(x!==0)ctx.fillText(x,ox+x*sx-4,oy+13)}
+  for(let y=1;y<=5;y++){ctx.fillText(y,ox+4,oy-y*sy+3)}
+  // Parabola
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=2;ctx.beginPath();
+  for(let px=-3;px<=3;px+=0.05){let x=ox+px*sx,y=oy-px*px*sy;if(y<5)continue;if(px===-3)ctx.moveTo(x,y);else ctx.lineTo(x,y)}
+  ctx.stroke();
+  // E on x-axis
+  ctx.fillStyle='rgba(5,150,105,.3)';ctx.fillRect(ox,oy-2,b*sx,4);
+  ctx.strokeStyle='#059669';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox+b*sx,oy);ctx.stroke();
+  ctx.fillStyle='#059669';ctx.font='bold 10px Georgia';ctx.fillText('E=[0,'+b+']',ox+2,oy+22);
+  // f(E) on y-axis
+  let fmax=b*b;
+  ctx.fillStyle='rgba(220,38,38,.2)';ctx.fillRect(ox-3,oy-fmax*sy,6,fmax*sy);
+  ctx.strokeStyle='#dc2626';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ox,oy);ctx.lineTo(ox,oy-fmax*sy);ctx.stroke();
+  ctx.fillStyle='#dc2626';ctx.font='bold 10px Georgia';ctx.fillText('f(E)=[0,'+fmax+']',ox+8,oy-fmax*sy/2);
+  // f^{-1}(f(E)) extra part
+  ctx.fillStyle='rgba(217,119,6,.3)';ctx.fillRect(ox-b*sx,oy-2,b*sx,4);
+  ctx.strokeStyle='#d97706';ctx.lineWidth=2;ctx.setLineDash([5,3]);ctx.beginPath();ctx.moveTo(ox-b*sx,oy);ctx.lineTo(ox,oy);ctx.stroke();ctx.setLineDash([]);
+  ctx.fillStyle='#d97706';ctx.font='bold 10px Georgia';ctx.fillText('extra! [-'+b+',0)',ox-b*sx,oy+22);
+  document.getElementById('imgInfo').innerHTML=`\\(f(E) = [0, ${fmax}]\\), \\;\\(f^{-1}(f(E)) = [-${b}, ${b}] \\neq E\\). The preimage picks up the <span style="color:#d97706;font-weight:700">extra</span> interval \\([-${b}, 0)\\).`;
+  renderMathInElement(document.getElementById('imgInfo'),{delimiters:[{left:"\\(",right:"\\)",display:false}]});
+}
+
+// === Chain of equivalences proof ===
+function buildChainProof(){
+  let c=document.getElementById('chainProof');
+  const steps=[
+    {left:'x \\in f^{-1}(A \\cap B)',right:'f(x) \\in A \\cap B',reason:'Definition of preimage'},
+    {left:'f(x) \\in A \\cap B',right:'f(x) \\in A \\text{ and } f(x) \\in B',reason:'Definition of intersection'},
+    {left:'f(x) \\in A \\text{ and } f(x) \\in B',right:'x \\in f^{-1}(A) \\text{ and } x \\in f^{-1}(B)',reason:'Definition of preimage'},
+    {left:'x \\in f^{-1}(A) \\text{ and } x \\in f^{-1}(B)',right:'x \\in f^{-1}(A) \\cap f^{-1}(B)',reason:'Definition of intersection'}
+  ];
+  let h='<p style="font-size:.9em;margin-bottom:8px">Each step is an ⟺ equivalence. Click to highlight:</p>';
+  steps.forEach((s,i)=>{
+    h+=`<div class="chain-step" onclick="highlightChain(${i})" id="chain${i}">
+      <span>\\(${s.left}\\)</span><span style="color:var(--blue);font-weight:700;margin:0 6px">⟺</span><span>\\(${s.right}\\)</span>
+    </div>
+    <div class="chain-reason" id="chainR${i}" style="display:none;margin-bottom:4px">${s.reason}</div>`;
+  });
+  h+='<p style="margin-top:8px;font-size:.9em">Since every step is ⟺, the sets are <strong>equal</strong>. □</p>';
+  c.innerHTML=h;
+  renderMathInElement(c,{delimiters:[{left:"\\(",right:"\\)",display:false}]});
+}
+function highlightChain(i){
+  for(let j=0;j<4;j++){
+    document.getElementById('chain'+j).classList.toggle('active',j===i);
+    document.getElementById('chainR'+j).style.display=j===i?'block':'none';
+  }
+}
+
+// === Composition visualizer ===
+let compAnimId;
+function drawComp(highlight){
+  let s=document.getElementById('compSvg');
+  let h=`<defs><marker id="ac" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#6b7280"/></marker>
+  <marker id="acr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#dc2626"/></marker></defs>`;
+  // Sets
+  const sets=[{x:60,label:'A',color:'#2563eb',els:['x']},{x:250,label:'B',color:'#d97706',els:['f(x)']},{x:440,label:'C',color:'#059669',els:['g(f(x))']}];
+  sets.forEach(s2=>{
+    h+=`<ellipse cx="${s2.x}" cy="70" rx="45" ry="50" fill="none" stroke="${s2.color}" stroke-width="2"/>`;
+    h+=`<text x="${s2.x}" y="20" text-anchor="middle" font-size="13" fill="${s2.color}" font-weight="bold">${s2.label}</text>`;
+    h+=`<text x="${s2.x}" y="75" text-anchor="middle" font-size="11" fill="${s2.color}">${s2.els[0]}</text>`;
+  });
+  // Arrows
+  let fCol=highlight>=1?'#dc2626':'#6b7280',gCol=highlight>=2?'#dc2626':'#6b7280';
+  let fMk=highlight>=1?'url(#acr)':'url(#ac)',gMk=highlight>=2?'url(#acr)':'url(#ac)';
+  h+=`<line x1="108" y1="60" x2="202" y2="60" stroke="${fCol}" stroke-width="${highlight>=1?3:2}" marker-end="${fMk}"/>`;
+  h+=`<text x="155" y="52" text-anchor="middle" font-size="12" fill="${fCol}" font-weight="bold">f</text>`;
+  h+=`<line x1="298" y1="60" x2="392" y2="60" stroke="${gCol}" stroke-width="${highlight>=2?3:2}" marker-end="${gMk}"/>`;
+  h+=`<text x="345" y="52" text-anchor="middle" font-size="12" fill="${gCol}" font-weight="bold">g</text>`;
+  // g∘f arc
+  if(highlight>=3){
+    h+=`<path d="M 108 95 Q 250 160 392 95" fill="none" stroke="#dc2626" stroke-width="2.5" stroke-dasharray="6,3" marker-end="url(#acr)"/>`;
+    h+=`<text x="250" y="150" text-anchor="middle" font-size="12" fill="#dc2626" font-weight="bold">g ∘ f</text>`;
+  }
+  // Moving dot
+  if(highlight===1){h+=`<circle cx="155" cy="60" r="6" fill="#dc2626"><animate attributeName="cx" from="108" to="202" dur="0.5s" fill="freeze"/></circle>`}
+  if(highlight===2){h+=`<circle cx="345" cy="60" r="6" fill="#dc2626"><animate attributeName="cx" from="298" to="392" dur="0.5s" fill="freeze"/></circle>`}
+  s.innerHTML=h;
+}
+async function animateComp(){
+  drawComp(0);await sleep(400);drawComp(1);await sleep(800);drawComp(2);await sleep(800);drawComp(3);
+}
+function resetComp(){drawComp(0)}
+
+// === Interleave Z animation ===
+let ilTimer,ilIdx=0;
+const zMap=[0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6,-7,7];
+function resetInterleave(){
+  clearInterval(ilTimer);ilIdx=0;
+  document.getElementById('ilN').innerHTML='';
+  document.getElementById('ilZ').innerHTML='';
+  document.getElementById('ilCount').textContent='';
+}
+function animateInterleave(){
+  resetInterleave();
+  ilTimer=setInterval(()=>{
+    if(ilIdx>=15){clearInterval(ilTimer);return}
+    let n=ilIdx+1,z=zMap[ilIdx];
+    let nEl=document.createElement('span');nEl.className='il-item';nEl.style.background='var(--blue-bg)';nEl.style.color='var(--blue)';nEl.textContent=n;
+    document.getElementById('ilN').appendChild(nEl);
+    let zEl=document.createElement('span');zEl.className='il-item';zEl.style.background=z>=0?'var(--green-bg)':'var(--red-bg)';zEl.style.color=z>=0?'var(--green)':'var(--red)';zEl.textContent=z;
+    document.getElementById('ilZ').appendChild(zEl);
+    document.getElementById('ilCount').textContent=`Mapped ${n} → ${z}`;
+    ilIdx++;
+  },350);
+}
+
+// === Cantor diagonal enumeration ===
+let cantorOrder=[],cantorIdx=0,cantorTimer,CGRID=6;
+function cantorReset(){
+  clearInterval(cantorTimer);cantorIdx=0;
+  // Build enumeration order
+  cantorOrder=[];
+  for(let s=2;s<=CGRID*2;s++){
+    for(let m=1;m<s;m++){
+      let n=s-m;
+      if(m<=CGRID&&n<=CGRID)cantorOrder.push([m,n]);
+    }
+  }
+  // Build grid
+  let g=document.getElementById('cantorGrid');
+  let h=`<div style="display:grid;grid-template-columns:repeat(${CGRID},42px);gap:3px">`;
+  for(let n=CGRID;n>=1;n--){
+    for(let m=1;m<=CGRID;m++){
+      h+=`<div class="enum-cell" id="cc${m}_${n}" style="background:#f3f4f6;color:#9ca3af;font-size:.65em" onclick="cantorClick(${m},${n})">(${m},${n})</div>`;
+    }
+  }
+  h+='</div>';
+  g.innerHTML=h;
+  document.getElementById('cantorCount').textContent='Position: 0 / '+cantorOrder.length;
+  document.getElementById('cantorInfo').textContent='Click Step or Auto to start the enumeration.';
+}
+function cantorStep(){
+  if(cantorIdx>=cantorOrder.length)return;
+  let [m,n]=cantorOrder[cantorIdx];
+  let el=document.getElementById('cc'+m+'_'+n);
+  let hue=((cantorIdx*37)%360);
+  el.style.background=`hsl(${hue},65%,85%)`;
+  el.style.color='#1f2937';el.style.fontWeight='700';
+  el.textContent=(cantorIdx+1);
+  cantorIdx++;
+  document.getElementById('cantorCount').textContent='Position: '+cantorIdx+' / '+cantorOrder.length;
+  document.getElementById('cantorInfo').textContent=`Enumerated (${m}, ${n}) at position ${cantorIdx}. Sum m+n = ${m+n}.`;
+}
+function cantorAuto(){
+  cantorReset();
+  cantorTimer=setInterval(()=>{
+    if(cantorIdx>=cantorOrder.length){clearInterval(cantorTimer);document.getElementById('cantorInfo').textContent='Done! All pairs enumerated.';return}
+    cantorStep();
+  },200);
+}
+function cantorClick(m,n){
+  let pos=cantorOrder.findIndex(([a,b])=>a===m&&b===n);
+  if(pos>=0)document.getElementById('cantorInfo').textContent=`(${m}, ${n}) would be at position ${pos+1} in the enumeration. Sum = ${m+n}.`;
+}
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+</script>
+</body>
+</html>
