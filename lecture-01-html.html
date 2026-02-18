@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math 205 — Lecture 01: Sets and Mathematical Induction</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{--blue:#2563eb;--blue-bg:#dbeafe;--green:#059669;--green-bg:#d1fae5;--orange:#d97706;--orange-bg:#fef3c7;--red:#dc2626;--red-bg:#fee2e2;--violet:#7c3aed;--violet-bg:#ede9fe;--gray:#6b7280;--dark:#1f2937;--light:#f9fafb}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--dark);background:var(--light);line-height:1.7;max-width:860px;margin:0 auto;padding:20px 24px 60px}
+h1{font-size:2em;text-align:center;margin-bottom:4px}
+h2.subtitle{font-size:1.2em;text-align:center;color:var(--blue);margin-bottom:4px;font-weight:600}
+.date{text-align:center;color:var(--gray);font-size:.9em;margin-bottom:8px}
+.divider{border:none;border-top:2px solid #d1d5db;margin:16px auto;width:50%}
+h2{font-size:1.5em;margin:36px 0 12px;color:var(--dark);border-bottom:2px solid #e5e7eb;padding-bottom:4px}
+h3{font-size:1.15em;margin:20px 0 8px;color:#374151}
+p{margin:8px 0}
+.box{border-radius:8px;margin:20px 0;overflow:hidden;border-width:2px;border-style:solid}
+.box-title{color:#fff;padding:8px 16px;font-weight:700;font-size:.9em}
+.box-body{padding:14px 18px}
+.def{border-color:var(--blue);background:var(--blue-bg)}.def .box-title{background:var(--blue)}
+.thm{border-color:var(--green);background:var(--green-bg)}.thm .box-title{background:var(--green)}
+.ex{border-color:var(--orange);background:var(--orange-bg)}.ex .box-title{background:var(--orange)}
+.note{border-color:var(--red);background:var(--red-bg)}.note .box-title{background:var(--red)}
+.exer{border-color:var(--violet);background:var(--violet-bg)}.exer .box-title{background:var(--violet)}
+.proof-box{background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;padding:16px 20px;margin:16px 0}
+.proof-toggle{cursor:pointer;user-select:none;color:var(--blue);font-weight:700;display:flex;align-items:center;gap:6px}
+.proof-toggle:hover{color:#1d4ed8}
+.proof-toggle .arrow{transition:transform .25s;display:inline-block}
+.proof-toggle.open .arrow{transform:rotate(90deg)}
+.proof-content{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.proof-content.show{max-height:3000px}
+.highlight{background:rgba(251,191,36,.25);padding:2px 6px;border-radius:4px}
+.center{text-align:center;margin:12px 0}
+.katex-display{margin:12px 0!important}
+table{border-collapse:collapse;margin:12px auto}
+th,td{border:1px solid #d1d5db;padding:6px 12px;text-align:center;font-size:.9em}
+th{background:#e5e7eb;font-weight:700}
+.match-col{background:var(--blue-bg)!important;font-weight:700}
+svg text{font-family:Georgia,serif}
+.interactive-area{background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:20px;margin:20px 0;text-align:center}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:.85em;transition:all .2s}
+button:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue.active{background:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.3)}
+.btn-sm{padding:4px 10px;font-size:.8em;border-radius:50%;width:32px;height:32px}
+.tag{display:inline-block;font-size:.75em;padding:2px 8px;border-radius:10px;font-weight:600;margin:0 2px}
+.tag-yes{background:#d1fae5;color:#065f46}
+.tag-no{background:#fee2e2;color:#991b1b}
+/* Venn diagrams */
+.venn-container{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;margin:16px 0}
+.venn-card{cursor:pointer;border:2px solid #e5e7eb;border-radius:10px;padding:12px;transition:all .25s;width:180px;text-align:center}
+.venn-card:hover,.venn-card.active{border-color:var(--blue);box-shadow:0 2px 12px rgba(37,99,235,.15)}
+.venn-card.active{background:var(--blue-bg)}
+.venn-label{font-size:.85em;font-weight:600;margin-top:6px}
+/* Induction animation */
+.domino-row{display:flex;align-items:flex-end;justify-content:center;gap:4px;height:80px;margin:16px 0}
+.domino{width:22px;height:55px;border-radius:3px;transition:transform .3s ease,background .3s;transform-origin:bottom center;position:relative}
+.domino.standing{background:#9ca3af;transform:rotate(0deg)}
+.domino.fallen{transform:rotate(-70deg)}
+.domino.base{background:var(--red)}
+.domino.ind{background:var(--orange)}
+.domino.waiting{background:#d1d5db}
+.domino-num{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:.65em;color:var(--gray);white-space:nowrap}
+/* Tower of Hanoi */
+.hanoi-pegs{display:flex;justify-content:center;gap:40px;margin:16px 0}
+.hanoi-peg{display:flex;flex-direction:column-reverse;align-items:center;width:120px;min-height:120px;position:relative}
+.hanoi-peg::before{content:'';position:absolute;bottom:0;width:100%;height:4px;background:#374151;border-radius:2px}
+.hanoi-peg::after{content:'';position:absolute;bottom:4px;width:4px;height:100px;background:#6b7280}
+.hanoi-disk{height:14px;border-radius:4px;margin-bottom:0;z-index:1;transition:all .3s}
+.hanoi-peg-label{font-size:.8em;color:var(--gray);margin-top:4px;font-weight:600}
+.hanoi-controls{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px 0;flex-wrap:wrap}
+.move-counter{font-size:.9em;color:var(--dark);font-weight:600}
+/* Indexed sets viz */
+.set-bar{display:flex;align-items:center;margin:4px 0;gap:8px}
+.set-label{font-weight:700;font-size:.85em;width:30px;text-align:right}
+.set-elements{display:flex;gap:2px}
+.set-el{width:28px;height:24px;display:flex;align-items:center;justify-content:center;font-size:.75em;border-radius:4px;transition:all .3s}
+@media(max-width:600px){body{padding:12px 14px}h1{font-size:1.5em}.hanoi-pegs{gap:16px}.hanoi-peg{width:80px}}
+</style>
+</head>
+<body>
+
+<h1>Math 205: Real Analysis</h1>
+<h2 class="subtitle">Lecture 01 — Sets and Mathematical Induction</h2>
+<p class="date">Lecture Notes</p>
+<hr class="divider">
+
+<!-- ==================== SECTION 1 ==================== -->
+<h2>1 &nbsp; Sets and Well-Definedness</h2>
+
+<div class="box def"><div class="box-title">Definition 1.1: Set</div><div class="box-body">
+<p>A <strong>set</strong> is a well-defined collection of distinct objects, called <strong>elements</strong>.</p>
+<p>The phrase <em>well-defined</em> means that for any object, it must be unambiguous whether the object belongs to the set or not.</p>
+</div></div>
+
+<p>We write \(x \in A\) to mean "\(x\) is an element of \(A\)" and \(x \notin A\) to mean "\(x\) is not an element of \(A\)."</p>
+
+<div class="box ex"><div class="box-title">Example 1.1: Well-Defined vs. Not Well-Defined</div><div class="box-body">
+<p><strong>Not well-defined:</strong> "The set of all colors" — unclear whether certain shades should be included.</p>
+<p><strong>Well-defined:</strong> The set of natural numbers \(\mathbb{N} = \{1, 2, 3, \ldots\}\).</p>
+</div></div>
+
+<div class="box note"><div class="box-title">Important Note: Notation</div><div class="box-body">
+<p>In this course: \(\mathbb{N} = \{1, 2, 3, \ldots\}\) (does <strong>not</strong> include 0). Some textbooks include 0 — always check!</p>
+</div></div>
+
+<!-- ==================== SECTION 2 ==================== -->
+<h2>2 &nbsp; Basic Set Operations</h2>
+
+<p>Let \(A\) and \(B\) be sets, and let \(U\) denote the <strong>universal set</strong>. Click each operation below to see its Venn diagram:</p>
+
+<div class="box def"><div class="box-title">Definition 2.1: Set Operations — Interactive Venn Diagrams</div><div class="box-body">
+<div class="venn-container" id="vennBtns">
+  <div class="venn-card active" onclick="showVenn('union')"><svg viewBox="0 0 160 100" width="140"><circle cx="55" cy="50" r="35" fill="#93c5fd" opacity=".6" stroke="#2563eb" stroke-width="2"/><circle cx="100" cy="50" r="35" fill="#93c5fd" opacity=".6" stroke="#2563eb" stroke-width="2"/></svg><div class="venn-label">Union \(A \cup B\)</div></div>
+  <div class="venn-card" onclick="showVenn('inter')"><svg viewBox="0 0 160 100" width="140"><defs><clipPath id="ci"><circle cx="55" cy="50" r="35"/></clipPath></defs><circle cx="55" cy="50" r="35" fill="none" stroke="#2563eb" stroke-width="2"/><circle cx="100" cy="50" r="35" fill="none" stroke="#2563eb" stroke-width="2"/><circle cx="100" cy="50" r="35" fill="#86efac" opacity=".7" clip-path="url(#ci)"/></svg><div class="venn-label">Intersection \(A \cap B\)</div></div>
+  <div class="venn-card" onclick="showVenn('comp')"><svg viewBox="0 0 160 110" width="140"><rect x="5" y="5" width="150" height="100" rx="6" fill="#c7d2fe" opacity=".5" stroke="#4338ca" stroke-width="1.5"/><circle cx="80" cy="55" r="30" fill="#fff" stroke="#2563eb" stroke-width="2"/><text x="80" y="60" text-anchor="middle" font-size="12" fill="#1e3a5f" font-weight="bold">A</text><text x="20" y="20" font-size="9" fill="#4338ca">U</text></svg><div class="venn-label">Complement \(A^c\)</div></div>
+  <div class="venn-card" onclick="showVenn('diff')"><svg viewBox="0 0 160 100" width="140"><defs><clipPath id="cd"><circle cx="100" cy="50" r="35"/></clipPath></defs><circle cx="55" cy="50" r="35" fill="#fca5a5" opacity=".6" stroke="#dc2626" stroke-width="2"/><circle cx="55" cy="50" r="35" fill="#fff" clip-path="url(#cd)"/><circle cx="55" cy="50" r="35" fill="none" stroke="#dc2626" stroke-width="2"/><circle cx="100" cy="50" r="35" fill="none" stroke="#2563eb" stroke-width="2"/></svg><div class="venn-label">Difference \(A \setminus B\)</div></div>
+</div>
+<div id="vennInfo" style="margin-top:10px">
+  <p id="vennFormula" class="center" style="font-size:1.1em;font-weight:600"></p>
+  <p id="vennDesc"></p>
+</div>
+</div></div>
+
+<div class="box note"><div class="box-title">Important Identity</div><div class="box-body">
+<p class="center" style="font-size:1.1em">\(A \setminus B = A \cap B^c\)</p>
+<p>Both expressions describe "elements in \(A\) but not in \(B\)." This identity is used frequently in proofs.</p>
+</div></div>
+
+<!-- ==================== SECTION 3 ==================== -->
+<h2>3 &nbsp; Equality of Sets</h2>
+
+<div class="box def"><div class="box-title">Definition 3.1: Set Equality</div><div class="box-body">
+<p>Two sets \(A\) and \(B\) are <strong>equal</strong> if and only if they contain exactly the same elements:</p>
+$$A = B \iff (A \subseteq B) \text{ and } (B \subseteq A)$$
+</div></div>
+
+<p>To prove \(A = B\), use a <strong>double containment</strong> argument:</p>
+<div class="proof-box">
+<p><strong>Step 1 (⊆):</strong> Show that if \(x \in A\), then \(x \in B\).</p>
+<p><strong>Step 2 (⊇):</strong> Show that if \(x \in B\), then \(x \in A\).</p>
+</div>
+
+<!-- ==================== SECTION 4 ==================== -->
+<h2>4 &nbsp; De Morgan's Laws</h2>
+
+<div class="box thm"><div class="box-title">Theorem 4.1: De Morgan's Laws</div><div class="box-body">
+$$(A \cup B)^c = A^c \cap B^c$$
+$$(A \cap B)^c = A^c \cup B^c$$
+<p><em>Intuition:</em> Negation "flips" \(\cup\) to \(\cap\) and \(\cap\) to \(\cup\).</p>
+</div></div>
+
+<h3>4.1 &nbsp; Proof using Set Theory</h3>
+<div class="proof-box">
+  <div class="proof-toggle" onclick="toggleProof(this)"><span class="arrow">▶</span> Click to show/hide proof</div>
+  <div class="proof-content">
+    <p style="margin-top:10px"><strong>(⊆)</strong> Let \(x \in (A \cup B)^c\). Then \(x \notin A \cup B\), which means \(x \notin A\) <em>and</em> \(x \notin B\). Hence \(x \in A^c\) and \(x \in B^c\), so \(x \in A^c \cap B^c\). ✓</p>
+    <p><strong>(⊇)</strong> Let \(x \in A^c \cap B^c\). Then \(x \notin A\) and \(x \notin B\), so \(x \notin A \cup B\), giving \(x \in (A \cup B)^c\). ✓</p>
+    <p>Since both containments hold, \((A \cup B)^c = A^c \cap B^c\). □</p>
+  </div>
+</div>
+
+<h3>4.2 &nbsp; Interactive Truth Table</h3>
+<p>Click any row to highlight it. The blue columns are identical, proving the equivalence!</p>
+<div class="interactive-area">
+<table id="truthTable">
+<thead><tr><th>\(p\)</th><th>\(q\)</th><th>\(p \lor q\)</th><th class="match-col">\(\neg(p \lor q)\)</th><th>\(\neg p\)</th><th>\(\neg q\)</th><th class="match-col">\((\neg p) \land (\neg q)\)</th></tr></thead>
+<tbody></tbody>
+</table>
+</div>
+
+<!-- ==================== SECTION 5 ==================== -->
+<h2>5 &nbsp; Natural Numbers and Peano Axioms</h2>
+
+<div class="box def"><div class="box-title">Definition 5.1: Peano Axioms</div><div class="box-body">
+<p><strong>(N1)</strong> \(1 \in \mathbb{N}\). <span style="color:var(--gray);font-size:.85em">— There is a starting element</span></p>
+<p><strong>(N2)</strong> Every \(n \in \mathbb{N}\) has a <strong>successor</strong>. <span style="color:var(--gray);font-size:.85em">— We can always go to \(n+1\)</span></p>
+<p><strong>(N3)</strong> 1 is not the successor of any natural number. <span style="color:var(--gray);font-size:.85em">— Nothing before 1</span></p>
+<p><strong>(N4)</strong> If two natural numbers have the same successor, they are equal. <span style="color:var(--gray);font-size:.85em">— No "merging"</span></p>
+<p><strong>(N5)</strong> <em>(Induction Axiom)</em> If \(A \subseteq \mathbb{N}\) contains 1 and contains \(n+1\) whenever it contains \(n\), then \(A = \mathbb{N}\).</p>
+</div></div>
+
+<!-- ==================== SECTION 6 ==================== -->
+<h2>6 &nbsp; Principle of Mathematical Induction</h2>
+
+<div class="box thm"><div class="box-title">Theorem 6.1: Principle of Mathematical Induction</div><div class="box-body">
+<p>Let \(P(n)\) be a statement for \(n \in \mathbb{N}\). To prove \(P(n)\) for all \(n\):</p>
+<div class="proof-box" style="background:#fff;border-color:#a7f3d0">
+<p><strong>1. Base Step:</strong> Prove \(P(1)\).</p>
+<p><strong>2. Inductive Step:</strong> Assume \(P(k)\) <em>(inductive hypothesis)</em>, prove \(P(k+1)\).</p>
+</div>
+</div></div>
+
+<h3>6.1 &nbsp; The Domino Analogy — Interactive</h3>
+<p>Click <strong>Start</strong> to watch the dominoes fall. The <span style="color:var(--red);font-weight:700">base step</span> knocks over the first, and the <span style="color:var(--orange);font-weight:700">inductive step</span> ensures each knocks over the next.</p>
+<div class="interactive-area">
+  <div class="domino-row" id="dominoRow"></div>
+  <div style="margin-top:12px">
+    <button class="btn-blue" onclick="startDominoes()">▶ Start Induction</button>
+    <button class="btn-blue" style="background:var(--gray)" onclick="resetDominoes()">↺ Reset</button>
+  </div>
+</div>
+
+<!-- ==================== SECTION 7 ==================== -->
+<h2>7 &nbsp; Examples of Induction</h2>
+
+<div class="box ex"><div class="box-title">Example 7.1: Sum of First \(n\) Natural Numbers</div><div class="box-body">
+<p><strong>Prove:</strong> \(\displaystyle 1 + 2 + \cdots + n = \frac{n(n+1)}{2}\) for all \(n \in \mathbb{N}\).</p>
+</div></div>
+
+<div class="proof-box">
+  <div class="proof-toggle" onclick="toggleProof(this)"><span class="arrow">▶</span> Click to show/hide proof</div>
+  <div class="proof-content">
+    <p style="margin-top:10px"><strong>Base Step</strong> (\(n = 1\)): Left = 1. Right = \(\frac{1 \cdot 2}{2} = 1\). ✓</p>
+    <p><strong>Inductive Hypothesis:</strong> Assume for some \(k\):</p>
+    <p class="center"><span class="highlight">\(\displaystyle 1 + 2 + \cdots + k = \frac{k(k+1)}{2}\)</span></p>
+    <p><strong>Inductive Step:</strong></p>
+    $$1 + 2 + \cdots + k + (k+1) = \underbrace{\frac{k(k+1)}{2}}_{\text{by I.H.}} + (k+1) = \frac{k(k+1) + 2(k+1)}{2} = \frac{(k+1)(k+2)}{2} \quad\checkmark$$
+    <p>By induction, the formula holds for all \(n \in \mathbb{N}\). □</p>
+  </div>
+</div>
+
+<h3>Interactive: Verify the Formula</h3>
+<div class="interactive-area">
+  <p>Choose \(n\) and watch the sum build up:</p>
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin:10px 0">
+    <span>n = </span>
+    <input type="range" id="sumSlider" min="1" max="12" value="4" oninput="updateSum()" style="width:200px">
+    <strong id="sumN">4</strong>
+  </div>
+  <div id="sumVisual" style="display:flex;justify-content:center;gap:3px;margin:12px 0;flex-wrap:wrap"></div>
+  <p id="sumResult" style="font-size:1.05em;font-weight:600"></p>
+</div>
+
+<h3>Visual: Staircase Proof</h3>
+<div class="interactive-area">
+  <p>The sum \(1 + 2 + \cdots + n\) forms a staircase. Complete it to an \(n \times (n{+}1)\) rectangle — the sum is half the rectangle!</p>
+  <canvas id="staircaseCanvas" width="340" height="200" style="max-width:100%"></canvas>
+</div>
+
+<div class="box ex"><div class="box-title">Example 7.2: Divisibility by 16</div><div class="box-body">
+<p><strong>Prove:</strong> \(5^n - 4n - 1\) is divisible by 16 for all \(n \in \mathbb{N}\).</p>
+</div></div>
+
+<div class="proof-box">
+  <div class="proof-toggle" onclick="toggleProof(this)"><span class="arrow">▶</span> Click to show/hide proof</div>
+  <div class="proof-content">
+    <p style="margin-top:10px"><strong>Base Step</strong> (\(n=1\)): \(5 - 4 - 1 = 0 = 16 \cdot 0\). ✓</p>
+    <p><strong>Inductive Hypothesis:</strong> Assume <span class="highlight">\(5^k - 4k - 1 = 16m\)</span> for some integer \(m\).</p>
+    <p><strong>Inductive Step:</strong></p>
+    $$5^{k+1} - 4(k+1) - 1 = 5 \cdot 5^k - 4k - 5 = 5\underbrace{(5^k - 4k - 1)}_{=16m} + 16k = 16(5m + k) \quad\checkmark$$
+    <p>By induction, the result holds for all \(n \in \mathbb{N}\). □</p>
+  </div>
+</div>
+
+<h3>Interactive: Verify Divisibility</h3>
+<div class="interactive-area">
+  <p>Click values of \(n\) to check that \(5^n - 4n - 1\) is divisible by 16:</p>
+  <div id="divBtns" style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:10px 0"></div>
+  <p id="divResult" style="font-size:.95em;margin-top:8px"></p>
+</div>
+
+<!-- ==================== SECTION 8 ==================== -->
+<h2>8 &nbsp; Tower of Hanoi</h2>
+
+<div class="box def"><div class="box-title">Definition 8.1: Tower of Hanoi</div><div class="box-body">
+<p>Three pegs, \(n\) disks of different sizes. Rules: move one disk at a time; never place a larger disk on a smaller one. Let \(T(n)\) = minimum moves to transfer all disks.</p>
+</div></div>
+
+<div class="box thm"><div class="box-title">Theorem 8.1: \(T(n) = 2^n - 1\)</div><div class="box-body">
+<p>Recurrence: \(T(n) = 2T(n-1) + 1\). Solution by induction: \(T(n) = 2^n - 1\).</p>
+</div></div>
+
+<h3>Interactive Tower of Hanoi</h3>
+<div class="interactive-area">
+  <div class="hanoi-controls">
+    <span>Disks:</span>
+    <span id="hanoiBtns"></span>
+    <span style="margin-left:12px" class="move-counter">Moves: <strong id="hanMoves">0</strong> / <strong id="hanMin">1</strong></span>
+  </div>
+  <div class="hanoi-pegs" id="hanoiArea">
+    <div><div class="hanoi-peg" id="peg0"></div><div class="hanoi-peg-label">Source</div></div>
+    <div><div class="hanoi-peg" id="peg1"></div><div class="hanoi-peg-label">Auxiliary</div></div>
+    <div><div class="hanoi-peg" id="peg2"></div><div class="hanoi-peg-label">Target</div></div>
+  </div>
+  <div class="hanoi-controls">
+    <button class="btn-blue" onclick="hanoiAutoSolve()" id="hanoiSolveBtn">▶ Auto-Solve</button>
+    <button class="btn-blue" style="background:var(--gray)" onclick="hanoiReset()">↺ Reset</button>
+  </div>
+  <p id="hanoiMsg" style="font-size:.85em;color:var(--gray);margin-top:4px"></p>
+</div>
+
+<!-- ==================== SECTION 9 ==================== -->
+<h2>9 &nbsp; Unions and Intersections over \(\mathbb{N}\)</h2>
+
+<div class="box def"><div class="box-title">Definition 9.1: Indexed Union</div><div class="box-body">
+$$\bigcup_{n \in \mathbb{N}} A_n = \{x \in U : x \in A_n \text{ for some } n \in \mathbb{N}\}$$
+<p><em>Union ↔ "there exists" ↔ ∃</em></p>
+</div></div>
+
+<div class="box def"><div class="box-title">Definition 9.2: Indexed Intersection</div><div class="box-body">
+$$\bigcap_{n \in \mathbb{N}} A_n = \{x \in U : x \in A_n \text{ for every } n \in \mathbb{N}\}$$
+<p><em>Intersection ↔ "for all" ↔ ∀</em></p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Example 9.1: Shrinking Sets — Interactive</div><div class="box-body">
+<p>Let \(A_n = \{k \in \mathbb{N} : k \geq n\}\). Use the slider to see how the sets shrink:</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:10px">
+    <span>Highlight \(A_n\) for \(n =\)</span>
+    <input type="range" id="setSlider" min="1" max="8" value="1" oninput="updateSets()">
+    <strong id="setN">1</strong>
+  </div>
+  <div id="setViz"></div>
+  <p id="setInfo" style="font-size:.9em;margin-top:8px"></p>
+</div>
+<p><strong>Union:</strong> \(\bigcup A_n = \mathbb{N}\) — every number appears in at least one \(A_n\).</p>
+<p><strong>Intersection:</strong> \(\bigcap A_n = \varnothing\) — no number is \(\geq n\) for every \(n\).</p>
+</div></div>
+
+<div class="box note"><div class="box-title">Key Takeaway: Quantifiers and Set Operations</div><div class="box-body">
+<p class="center" style="font-size:1.05em">\(\bigcup\) (Union) ↔ \(\exists\) (there exists) ↔ "for some"</p>
+<p class="center" style="font-size:1.05em">\(\bigcap\) (Intersection) ↔ \(\forall\) (for all) ↔ "for every"</p>
+</div></div>
+
+<!-- ==================== SECTION 10 ==================== -->
+<h2>10 &nbsp; Exercises</h2>
+
+<div class="box exer"><div class="box-title">Set Theory Exercises</div><div class="box-body">
+<p><strong>Exercise 1.</strong> Prove that \(A \setminus (B \cup C) = (A \setminus B) \cap (A \setminus C)\).</p>
+<p><strong>Exercise 2.</strong> Show that \(A \cap (B \cup C) = (A \cap B) \cup (A \cap C)\). <em>(Distributive law)</em></p>
+<p><strong>Exercise 3.</strong> Prove that \((A \cap B)^c = A^c \cup B^c\). <em>(The other De Morgan's Law)</em></p>
+</div></div>
+
+<div class="box exer"><div class="box-title">Mathematical Induction Exercises</div><div class="box-body">
+<p><strong>Exercise 4.</strong> Prove \(1^2 + 2^2 + \cdots + n^2 = \frac{n(n+1)(2n+1)}{6}\).</p>
+<p><strong>Exercise 5.</strong> Prove that \(3^n - 1\) is divisible by 2 for all \(n \in \mathbb{N}\).</p>
+<p><strong>Exercise 6.</strong> Prove by induction that the Tower of Hanoi requires \(2^n - 1\) moves.</p>
+<p><strong>Exercise 7 (Binomial Theorem).</strong> (a) Verify \((a+b)^n\) for \(n=1,2,3\). (b) Show Pascal's identity. (c) Prove by induction.</p>
+</div></div>
+
+<hr class="divider">
+<p class="center" style="color:var(--gray);font-size:.85em">Math 205: Real Analysis — Lecture 01</p>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+// Render KaTeX
+document.addEventListener("DOMContentLoaded",()=>{
+  renderMathInElement(document.body,{delimiters:[
+    {left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},
+    {left:"\\(",right:"\\)",display:false},{left:"$",right:"$",display:false}
+  ]});
+  initAll();
+});
+
+function initAll(){buildTruthTable();buildDominoes();updateSum();drawStaircase();buildDivBtns();initHanoi(3);buildSets();showVenn('union')}
+
+// === Collapsible proofs ===
+function toggleProof(el){
+  el.classList.toggle('open');
+  el.nextElementSibling.classList.toggle('show');
+}
+
+// === Venn Diagrams ===
+const vennData={
+  union:{formula:"A \\cup B = \\{x : x \\in A \\text{ or } x \\in B\\}",desc:"The union contains all elements that belong to <em>at least one</em> of the sets."},
+  inter:{formula:"A \\cap B = \\{x : x \\in A \\text{ and } x \\in B\\}",desc:"The intersection contains only elements that belong to <em>both</em> sets."},
+  comp:{formula:"A^c = \\{x \\in U : x \\notin A\\}",desc:"The complement contains everything in the universal set that is <em>not</em> in A."},
+  diff:{formula:"A \\setminus B = \\{x : x \\in A \\text{ and } x \\notin B\\}",desc:"The difference contains elements in A that are <em>not</em> in B."}
+};
+function showVenn(t){
+  document.querySelectorAll('.venn-card').forEach((c,i)=>{c.classList.toggle('active',['union','inter','comp','diff'][i]===t)});
+  let d=vennData[t];
+  document.getElementById('vennFormula').innerHTML='';
+  katex.render(d.formula,document.getElementById('vennFormula'),{displayMode:true});
+  document.getElementById('vennDesc').innerHTML=d.desc;
+}
+
+// === Truth Table ===
+function buildTruthTable(){
+  let tb=document.querySelector('#truthTable tbody');
+  [[1,1],[1,0],[0,1],[0,0]].forEach(([p,q])=>{
+    let pq=p||q,npq=pq?0:1,np=p?0:1,nq=q?0:1,npnq=(np&&nq)?1:0;
+    let r=document.createElement('tr');
+    r.innerHTML=[p,q,pq,npq,np,nq,npnq].map((v,i)=>{
+      let cls=(i===3||i===6)?'match-col':'';
+      return `<td class="${cls}">${v?'<span class="tag tag-yes">T</span>':'<span class="tag tag-no">F</span>'}</td>`;
+    }).join('');
+    r.style.cursor='pointer';
+    r.onclick=()=>{tb.querySelectorAll('tr').forEach(x=>x.style.background='');r.style.background='rgba(251,191,36,.2)'};
+    tb.appendChild(r);
+  });
+}
+
+// === Dominoes ===
+let domCount=10,domTimer;
+function buildDominoes(){
+  let row=document.getElementById('dominoRow');
+  row.innerHTML='';
+  for(let i=0;i<domCount;i++){
+    let d=document.createElement('div');
+    d.className='domino standing '+(i===0?'base':'waiting');
+    d.innerHTML=`<span class="domino-num">${i===0?'n=1':i<4?'n='+(i+1):'···'}</span>`;
+    row.appendChild(d);
+  }
+}
+function startDominoes(){
+  resetDominoes();
+  let ds=document.querySelectorAll('.domino'),i=0;
+  domTimer=setInterval(()=>{
+    if(i>=ds.length){clearInterval(domTimer);return}
+    ds[i].classList.remove('standing','waiting');
+    ds[i].classList.add('fallen',i===0?'base':'ind');
+    i++;
+  },250);
+}
+function resetDominoes(){clearInterval(domTimer);buildDominoes()}
+
+// === Sum visualization ===
+function updateSum(){
+  let n=+document.getElementById('sumSlider').value;
+  document.getElementById('sumN').textContent=n;
+  let v=document.getElementById('sumVisual');v.innerHTML='';
+  let s=0;
+  for(let i=1;i<=n;i++){
+    let b=document.createElement('div');
+    b.style.cssText=`width:${Math.max(28,44-n*2)}px;height:${i*18+10}px;background:hsl(${210+i*12},70%,60%);border-radius:4px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:2px;color:#fff;font-size:.75em;font-weight:700`;
+    b.textContent=i;
+    v.appendChild(b);
+    s+=i;
+  }
+  document.getElementById('sumResult').innerHTML=`\\(1+2+\\cdots+${n} = ${s} = \\frac{${n}\\cdot${n+1}}{2}\\)`;
+  renderMathInElement(document.getElementById('sumResult'),{delimiters:[{left:"\\(",right:"\\)",display:false}]});
+}
+
+// === Staircase ===
+function drawStaircase(){
+  let c=document.getElementById('staircaseCanvas'),ctx=c.getContext('2d'),n=5,sz=28,ox=30,oy=10;
+  ctx.clearRect(0,0,c.width,c.height);
+  for(let row=0;row<n;row++){
+    for(let col=0;col<n;col++){
+      let x=ox+col*sz,y=oy+row*sz;
+      if(col<=row){ctx.fillStyle='#3b82f6';ctx.strokeStyle='#1e40af'}
+      else{ctx.fillStyle='#bfdbfe';ctx.strokeStyle='#93c5fd'}
+      ctx.fillRect(x,y,sz-2,sz-2);
+      ctx.strokeRect(x,y,sz-2,sz-2);
+    }
+  }
+  ctx.fillStyle='#1e3a5f';ctx.font='13px Georgia';
+  ctx.fillText(`${n}×${n+1} rectangle = ${n*(n+1)} cells`,ox,oy+n*sz+20);
+  ctx.fillStyle='#2563eb';ctx.font='bold 13px Georgia';
+  ctx.fillText(`Sum = ${n*(n+1)/2} = half the rectangle`,ox,oy+n*sz+40);
+}
+
+// === Divisibility checker ===
+function buildDivBtns(){
+  let c=document.getElementById('divBtns');
+  for(let n=1;n<=8;n++){
+    let b=document.createElement('button');
+    b.className='btn-blue btn-sm';
+    b.textContent=n;
+    b.onclick=()=>{
+      let val=Math.pow(5,n)-4*n-1;
+      let q=val/16;
+      document.getElementById('divResult').innerHTML=
+        `\\(5^{${n}}-4(${n})-1 = ${val} = 16 \\times ${q}\\) `+(Number.isInteger(q)?'<span class="tag tag-yes">✓ Divisible!</span>':'<span class="tag tag-no">✗</span>');
+      renderMathInElement(document.getElementById('divResult'),{delimiters:[{left:"\\(",right:"\\)",display:false}]});
+    };
+    c.appendChild(b);
+  }
+}
+
+// === Tower of Hanoi ===
+let hanDisks=3,hanPegs=[[],[],[]],hanMoves=0,hanSolving=false;
+const diskColors=['#ef4444','#f59e0b','#22c55e','#3b82f6','#8b5cf6','#ec4899'];
+function initHanoi(n){
+  hanDisks=n;hanMoves=0;hanSolving=false;
+  hanPegs=[[],[],[]];
+  for(let i=n;i>=1;i--)hanPegs[0].push(i);
+  document.getElementById('hanMoves').textContent=0;
+  document.getElementById('hanMin').textContent=Math.pow(2,n)-1;
+  document.getElementById('hanoiMsg').textContent='Click Auto-Solve or drag disks (top disk only)!';
+  document.getElementById('hanoiSolveBtn').disabled=false;
+  renderHanoi();
+  // Build disk buttons
+  let bb=document.getElementById('hanoiBtns');bb.innerHTML='';
+  for(let d=1;d<=6;d++){
+    let b=document.createElement('button');
+    b.className='btn-blue btn-sm'+(d===n?' active':'');
+    b.textContent=d;
+    b.onclick=()=>initHanoi(d);
+    bb.appendChild(b);
+  }
+}
+function renderHanoi(){
+  for(let p=0;p<3;p++){
+    let el=document.getElementById('peg'+p);el.innerHTML='';
+    hanPegs[p].forEach(d=>{
+      let dk=document.createElement('div');
+      dk.className='hanoi-disk';
+      dk.style.width=(30+d*16)+'px';
+      dk.style.background=diskColors[(d-1)%6];
+      el.appendChild(dk);
+    });
+  }
+}
+function hanoiMove(from,to){
+  if(hanPegs[from].length===0)return false;
+  let d=hanPegs[from][hanPegs[from].length-1];
+  if(hanPegs[to].length>0&&hanPegs[to][hanPegs[to].length-1]<d)return false;
+  hanPegs[to].push(hanPegs[from].pop());
+  hanMoves++;
+  document.getElementById('hanMoves').textContent=hanMoves;
+  renderHanoi();
+  return true;
+}
+async function hanoiAutoSolve(){
+  if(hanSolving)return;
+  hanSolving=true;
+  document.getElementById('hanoiSolveBtn').disabled=true;
+  initHanoi(hanDisks);
+  await sleep(400);
+  await solveHanoi(hanDisks,0,2,1);
+  document.getElementById('hanoiMsg').innerHTML='<strong style="color:var(--green)">Solved in '+hanMoves+' moves!</strong> (minimum = '+(Math.pow(2,hanDisks)-1)+')';
+  hanSolving=false;
+}
+async function solveHanoi(n,from,to,aux){
+  if(n===0)return;
+  await solveHanoi(n-1,from,aux,to);
+  hanoiMove(from,to);
+  await sleep(Math.max(100,500-hanDisks*60));
+  await solveHanoi(n-1,aux,to,from);
+}
+function hanoiReset(){hanSolving=false;initHanoi(hanDisks)}
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+// === Indexed sets ===
+function buildSets(){updateSets()}
+function updateSets(){
+  let n=+document.getElementById('setSlider').value;
+  document.getElementById('setN').textContent=n;
+  let viz=document.getElementById('setViz');viz.innerHTML='';
+  for(let row=1;row<=5;row++){
+    let bar=document.createElement('div');bar.className='set-bar';
+    let lbl=document.createElement('div');lbl.className='set-label';lbl.style.color='#2563eb';lbl.textContent='A'+row;
+    bar.appendChild(lbl);
+    let els=document.createElement('div');els.className='set-elements';
+    for(let k=1;k<=10;k++){
+      let el=document.createElement('div');el.className='set-el';
+      if(k>=row){
+        el.textContent=k;
+        let inHighlight=k>=n;
+        el.style.background=inHighlight?'rgba(37,99,235,'+(0.15+row*0.08)+')':'#e5e7eb';
+        el.style.color=inHighlight?'#1e3a5f':'#9ca3af';
+        el.style.fontWeight=inHighlight?'700':'400';
+      }else{
+        el.style.background='transparent';
+      }
+      els.appendChild(el);
+    }
+    bar.appendChild(els);
+    viz.appendChild(bar);
+  }
+  document.getElementById('setInfo').innerHTML=`Showing elements ≥ ${n} highlighted. <strong>A<sub>${n}</sub> = {${n}, ${n+1}, ${n+2}, …}</strong>`;
+}
+</script>
+</body>
+</html>
