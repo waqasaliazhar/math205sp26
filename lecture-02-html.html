@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Math 205 — Lecture 02: Cartesian Products, Relations, and Functions</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+:root{--blue:#2563eb;--blue-bg:#dbeafe;--green:#059669;--green-bg:#d1fae5;--orange:#d97706;--orange-bg:#fef3c7;--red:#dc2626;--red-bg:#fee2e2;--violet:#7c3aed;--violet-bg:#ede9fe;--gray:#6b7280;--dark:#1f2937;--light:#f9fafb}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:Georgia,'Times New Roman',serif;color:var(--dark);background:var(--light);line-height:1.7;max-width:860px;margin:0 auto;padding:20px 24px 60px}
+h1{font-size:2em;text-align:center;margin-bottom:4px}
+h2.subtitle{font-size:1.2em;text-align:center;color:var(--blue);margin-bottom:4px;font-weight:600}
+.date{text-align:center;color:var(--gray);font-size:.9em;margin-bottom:8px}
+.divider{border:none;border-top:2px solid #d1d5db;margin:16px auto;width:50%}
+h2{font-size:1.5em;margin:36px 0 12px;color:var(--dark);border-bottom:2px solid #e5e7eb;padding-bottom:4px}
+h3{font-size:1.15em;margin:20px 0 8px;color:#374151}
+p{margin:8px 0}
+.box{border-radius:8px;margin:20px 0;overflow:hidden;border-width:2px;border-style:solid}
+.box-title{color:#fff;padding:8px 16px;font-weight:700;font-size:.9em}
+.box-body{padding:14px 18px}
+.def{border-color:var(--blue);background:var(--blue-bg)}.def .box-title{background:var(--blue)}
+.thm{border-color:var(--green);background:var(--green-bg)}.thm .box-title{background:var(--green)}
+.ex{border-color:var(--orange);background:var(--orange-bg)}.ex .box-title{background:var(--orange)}
+.note{border-color:var(--red);background:var(--red-bg)}.note .box-title{background:var(--red)}
+.exer{border-color:var(--violet);background:var(--violet-bg)}.exer .box-title{background:var(--violet)}
+.proof-box{background:#f3f4f6;border:1px solid #d1d5db;border-radius:8px;padding:16px 20px;margin:16px 0}
+.proof-toggle{cursor:pointer;user-select:none;color:var(--blue);font-weight:700;display:flex;align-items:center;gap:6px}
+.proof-toggle:hover{color:#1d4ed8}
+.proof-toggle .arrow{transition:transform .25s;display:inline-block}
+.proof-toggle.open .arrow{transform:rotate(90deg)}
+.proof-content{max-height:0;overflow:hidden;transition:max-height .5s ease}
+.proof-content.show{max-height:5000px}
+.highlight{background:rgba(251,191,36,.25);padding:2px 6px;border-radius:4px}
+.center{text-align:center;margin:12px 0}
+.katex-display{margin:12px 0!important}
+table{border-collapse:collapse;margin:12px auto}
+th,td{border:1px solid #d1d5db;padding:6px 12px;text-align:center;font-size:.9em}
+th{background:#e5e7eb;font-weight:700}
+.tag{display:inline-block;font-size:.75em;padding:2px 8px;border-radius:10px;font-weight:600;margin:0 2px}
+.tag-yes{background:#d1fae5;color:#065f46}
+.tag-no{background:#fee2e2;color:#991b1b}
+.interactive-area{background:#fff;border:2px solid #e5e7eb;border-radius:12px;padding:20px;margin:20px 0;text-align:center}
+button{font-family:inherit;cursor:pointer;border:none;border-radius:6px;padding:6px 14px;font-size:.85em;transition:all .2s}
+button:hover{transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue.active{background:#1d4ed8;box-shadow:0 0 0 3px rgba(37,99,235,.3)}
+.btn-sm{padding:4px 10px;font-size:.8em;border-radius:50%;width:32px;height:32px}
+.btn-pill{border-radius:20px;padding:6px 16px}
+svg text{font-family:Georgia,serif}
+/* Grid and dot styles */
+.grid-dot{cursor:pointer;transition:all .2s}
+.grid-dot:hover{r:6;opacity:.8}
+/* Relation cards */
+.rel-cards{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:12px 0}
+.rel-card{border:2px solid #e5e7eb;border-radius:10px;padding:12px 16px;min-width:160px;cursor:pointer;transition:all .25s;text-align:center}
+.rel-card:hover,.rel-card.active{border-color:var(--blue);background:var(--blue-bg);box-shadow:0 2px 8px rgba(37,99,235,.12)}
+.rel-card h4{margin:0 0 4px;font-size:.9em}
+/* Property badges */
+.prop-badge{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:20px;font-size:.8em;font-weight:600;margin:3px}
+.prop-yes{background:#d1fae5;color:#065f46}
+.prop-no{background:#fee2e2;color:#991b1b}
+/* Function arrows */
+.fn-container{display:flex;justify-content:center;gap:30px;flex-wrap:wrap;margin:16px 0}
+.fn-card{border:2px solid #e5e7eb;border-radius:10px;padding:16px;width:200px;text-align:center;cursor:pointer;transition:all .25s}
+.fn-card:hover,.fn-card.active{border-color:var(--green);background:var(--green-bg)}
+.fn-card h4{margin:0 0 8px;font-size:.85em}
+/* Z_n tables */
+.zn-table td.highlight-cell{background:rgba(220,38,38,.15)!important;font-weight:700}
+/* Equiv class columns */
+.eq-cols{display:flex;justify-content:center;gap:16px;margin:16px 0}
+.eq-col{border:2px solid;border-radius:8px;padding:8px 16px;min-width:80px;text-align:center;transition:all .3s}
+.eq-col h4{margin:0 0 6px;font-size:.9em}
+.eq-col p{margin:2px 0;font-size:.85em}
+.eq-col.active{transform:scale(1.05);box-shadow:0 4px 12px rgba(0,0,0,.1)}
+@media(max-width:600px){body{padding:12px 14px}h1{font-size:1.5em}.fn-container{gap:12px}.fn-card{width:160px}}
+</style>
+</head>
+<body>
+
+<h1>Math 205: Real Analysis</h1>
+<h2 class="subtitle">Lecture 02 — Cartesian Products, Relations, and Functions</h2>
+<p class="date">Lecture Notes</p>
+<hr class="divider">
+
+<!-- ==================== SECTION: Cartesian Products ==================== -->
+<h2>1 &nbsp; Cartesian Product of Sets</h2>
+
+<div class="box def"><div class="box-title">Definition: Cartesian Product</div><div class="box-body">
+<p>Let \(A\) and \(B\) be sets. The <strong>Cartesian product</strong> of \(A\) and \(B\) is</p>
+$$A \times B = \{(a, b) : a \in A,\; b \in B\}.$$
+<p>An element of \(A \times B\) is an <strong>ordered pair</strong>: \((a,b) \neq (b,a)\) unless \(a = b\).</p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Example: Interactive Cartesian Product</div><div class="box-body">
+<p>Let \(A = \{1, 2\}\) and \(B = \{\alpha, \beta, \gamma\}\). Click any dot in the grid to see its ordered pair:</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <svg id="cartGrid" viewBox="0 0 320 200" width="320" style="max-width:100%">
+    <!-- Axes labels -->
+    <text x="160" y="195" text-anchor="middle" font-size="13" fill="#d97706" font-weight="bold">B</text>
+    <text x="15" y="100" text-anchor="middle" font-size="13" fill="#2563eb" font-weight="bold" transform="rotate(-90,15,100)">A</text>
+    <!-- Grid lines -->
+    <line x1="60" y1="30" x2="60" y2="160" stroke="#e5e7eb" stroke-width="1"/>
+    <line x1="140" y1="30" x2="140" y2="160" stroke="#e5e7eb" stroke-width="1"/>
+    <line x1="220" y1="30" x2="220" y2="160" stroke="#e5e7eb" stroke-width="1"/>
+    <line x1="40" y1="60" x2="240" y2="60" stroke="#e5e7eb" stroke-width="1"/>
+    <line x1="40" y1="120" x2="240" y2="120" stroke="#e5e7eb" stroke-width="1"/>
+    <!-- B labels -->
+    <text x="60" y="175" text-anchor="middle" font-size="12" fill="#d97706">α</text>
+    <text x="140" y="175" text-anchor="middle" font-size="12" fill="#d97706">β</text>
+    <text x="220" y="175" text-anchor="middle" font-size="12" fill="#d97706">γ</text>
+    <!-- A labels -->
+    <text x="32" y="124" text-anchor="middle" font-size="12" fill="#2563eb">1</text>
+    <text x="32" y="64" text-anchor="middle" font-size="12" fill="#2563eb">2</text>
+    <!-- Dots -->
+    <circle class="grid-dot" cx="60" cy="120" r="8" fill="#3b82f6" onclick="showPair(1,'α',this)"/>
+    <circle class="grid-dot" cx="140" cy="120" r="8" fill="#3b82f6" onclick="showPair(1,'β',this)"/>
+    <circle class="grid-dot" cx="220" cy="120" r="8" fill="#3b82f6" onclick="showPair(1,'γ',this)"/>
+    <circle class="grid-dot" cx="60" cy="60" r="8" fill="#3b82f6" onclick="showPair(2,'α',this)"/>
+    <circle class="grid-dot" cx="140" cy="60" r="8" fill="#3b82f6" onclick="showPair(2,'β',this)"/>
+    <circle class="grid-dot" cx="220" cy="60" r="8" fill="#3b82f6" onclick="showPair(2,'γ',this)"/>
+    <!-- Info text -->
+    <text id="pairLabel" x="280" y="95" text-anchor="middle" font-size="14" fill="#1f2937" font-weight="bold"></text>
+  </svg>
+  <p id="cartInfo" style="font-size:.9em;color:var(--gray)">Click a dot to reveal the ordered pair!</p>
+  <p style="margin-top:8px">\(|A \times B| = |A| \cdot |B| = 2 \cdot 3 = 6\)</p>
+</div>
+</div></div>
+
+<div class="box thm"><div class="box-title">Theorem: Cardinality of Cartesian Product</div><div class="box-body">
+<p>If \(A\) and \(B\) are finite sets, then \(|A \times B| = |A| \cdot |B|\).</p>
+</div></div>
+
+<div class="box note"><div class="box-title">Important Note: The Cartesian Plane</div><div class="box-body">
+<p>The familiar \(xy\)-plane is precisely \(\mathbb{R} \times \mathbb{R} = \mathbb{R}^2\). Every point \((x,y)\) is an ordered pair of real numbers. This is why Cartesian products carry Descartes' name!</p>
+</div></div>
+
+<!-- ==================== SECTION: Relations ==================== -->
+<h2>2 &nbsp; Relations</h2>
+
+<div class="box def"><div class="box-title">Definition: Relation</div><div class="box-body">
+<p>A <strong>relation</strong> from \(A\) to \(B\) is any subset of \(A \times B\). If \((a,b) \in R\), we write \(a\,R\,b\).</p>
+</div></div>
+
+<div class="box thm"><div class="box-title">Theorem: Counting Relations</div><div class="box-body">
+<p>The number of distinct relations from \(A\) to \(B\) is \(2^{|A| \cdot |B|}\).</p>
+<p><em>Why?</em> Each ordered pair is either included or not — two choices per pair.</p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Example: Explore Relations — Interactive</div><div class="box-body">
+<p>Click to explore three different relations from \(A = \{1,2\}\) to \(B = \{\alpha, \beta, \gamma\}\):</p>
+<div class="rel-cards" id="relCards">
+  <div class="rel-card active" onclick="showRelation(0)"><h4>\(R_1\)</h4><p style="font-size:.8em">\(\{(1,\alpha),(2,\beta)\}\)</p></div>
+  <div class="rel-card" onclick="showRelation(1)"><h4>\(R_2\)</h4><p style="font-size:.8em">\(\{(1,\gamma),(2,\gamma)\}\)</p></div>
+  <div class="rel-card" onclick="showRelation(2)"><h4>\(R_3\)</h4><p style="font-size:.8em">\(\varnothing\)</p></div>
+</div>
+<div class="interactive-area" style="border:none;padding:10px">
+  <svg id="relSvg" viewBox="0 0 260 160" width="260" style="max-width:100%"></svg>
+</div>
+<p>Total number of relations: \(2^{2 \cdot 3} = 2^6 = 64\).</p>
+</div></div>
+
+<!-- ==================== SECTION: Relations on a Set ==================== -->
+<h2>3 &nbsp; Relations on a Set</h2>
+
+<div class="box def"><div class="box-title">Definition: Relation on a Set</div><div class="box-body">
+<p>If \(B = A\), a relation from \(A\) to \(A\) is called a <strong>relation on \(A\)</strong>.</p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Example: Congruence Modulo 3 — Interactive</div><div class="box-body">
+<p>Define \(a\,R\,b \iff 3 \mid (b - a)\) on \(\mathbb{Z}\). Enter two integers to check:</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap">
+    <label>\(a =\) <input type="number" id="modA" value="1" style="width:60px;padding:4px 8px;border:2px solid #d1d5db;border-radius:6px;font-size:1em" onchange="checkMod()"></label>
+    <label>\(b =\) <input type="number" id="modB" value="4" style="width:60px;padding:4px 8px;border:2px solid #d1d5db;border-radius:6px;font-size:1em" onchange="checkMod()"></label>
+    <button class="btn-blue btn-pill" onclick="checkMod()">Check</button>
+  </div>
+  <p id="modResult" style="margin-top:10px;font-size:.95em"></p>
+</div>
+<!-- Number line visualization -->
+<p style="margin-top:12px">Number line colored by residue class:</p>
+<div class="interactive-area" style="border:none;padding:5px;overflow-x:auto">
+  <svg id="modLine" viewBox="0 0 500 60" width="500" style="max-width:100%"></svg>
+</div>
+</div></div>
+
+<!-- ==================== SECTION: Properties of Relations ==================== -->
+<h2>4 &nbsp; Properties of Relations</h2>
+
+<div class="box def"><div class="box-title">Definition: Properties of Relations</div><div class="box-body">
+<p>Let \(R\) be a relation on a set \(A\).</p>
+<p><strong>Reflexive:</strong> \(a\,R\,a\) for all \(a \in A\). <span style="color:var(--gray);font-size:.85em">— Every element related to itself</span></p>
+<p><strong>Symmetric:</strong> \(a\,R\,b \Rightarrow b\,R\,a\). <span style="color:var(--gray);font-size:.85em">— Goes both ways</span></p>
+<p><strong>Antisymmetric:</strong> \(a\,R\,b\) and \(b\,R\,a \Rightarrow a = b\). <span style="color:var(--gray);font-size:.85em">— Two-way implies equal</span></p>
+<p><strong>Transitive:</strong> \(a\,R\,b\) and \(b\,R\,c \Rightarrow a\,R\,c\). <span style="color:var(--gray);font-size:.85em">— Chains together</span></p>
+</div></div>
+
+<h3>Interactive: Property Visualizer</h3>
+<p>Click each property to see a diagram illustrating it:</p>
+<div class="interactive-area">
+  <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:12px" id="propBtns"></div>
+  <svg id="propSvg" viewBox="0 0 300 160" width="300" style="max-width:100%"></svg>
+  <p id="propDesc" style="font-size:.9em;margin-top:8px"></p>
+</div>
+
+<div class="box ex"><div class="box-title">Example: Properties of Congruence Mod 3</div><div class="box-body">
+<p>For \(a\,R\,b \iff 3 \mid (b-a)\) on \(\mathbb{Z}\):</p>
+<p><span class="prop-badge prop-yes">✓ Reflexive</span> \(3 \mid (a - a) = 0\)</p>
+<p><span class="prop-badge prop-yes">✓ Symmetric</span> \(3 \mid (b-a) \Rightarrow 3 \mid (a-b)\)</p>
+<p><span class="prop-badge prop-yes">✓ Transitive</span> \(3 \mid (b-a)\) and \(3 \mid (c-b) \Rightarrow 3 \mid (c-a)\)</p>
+<p><span class="prop-badge prop-no">✗ Not Antisymmetric</span> \(0\,R\,3\) and \(3\,R\,0\) but \(0 \neq 3\)</p>
+</div></div>
+
+<!-- ==================== SECTION: Equivalence Relations ==================== -->
+<h2>5 &nbsp; Equivalence Relations</h2>
+
+<div class="box def"><div class="box-title">Definition: Equivalence Relation</div><div class="box-body">
+<p>A relation that is <strong>reflexive</strong>, <strong>symmetric</strong>, and <strong>transitive</strong> is an <strong>equivalence relation</strong>.</p>
+<p>Equivalence relations formalize the idea of "being the same in some sense."</p>
+</div></div>
+
+<div class="box note"><div class="box-title">The Three Tests</div><div class="box-body">
+<table>
+<tr><th>Property</th><th>Condition</th><th>Quantifier</th></tr>
+<tr><td><strong>Reflexive</strong></td><td>\(a\,R\,a\)</td><td>for all \(a \in A\)</td></tr>
+<tr><td><strong>Symmetric</strong></td><td>\(a\,R\,b \Rightarrow b\,R\,a\)</td><td>for all \(a,b \in A\)</td></tr>
+<tr><td><strong>Transitive</strong></td><td>\(a\,R\,b\) and \(b\,R\,c \Rightarrow a\,R\,c\)</td><td>for all \(a,b,c \in A\)</td></tr>
+</table>
+<p style="margin-top:8px">If <em>any one</em> fails, \(R\) is <em>not</em> an equivalence relation.</p>
+</div></div>
+
+<!-- ==================== SECTION: Equivalence Classes ==================== -->
+<h2>6 &nbsp; Equivalence Classes</h2>
+
+<div class="box def"><div class="box-title">Definition: Equivalence Class</div><div class="box-body">
+$$[a] = \{x \in A : x\,R\,a\}$$
+<p>The set of all elements related to \(a\).</p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Example: Equivalence Classes Mod 3 — Interactive</div><div class="box-body">
+<p>Click a class to highlight its elements. Notice: \([3] = [0]\), \([4] = [1]\), etc.</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <div style="display:flex;gap:10px;justify-content:center;margin-bottom:12px">
+    <button class="btn-blue btn-pill" onclick="highlightClass(0)" style="background:#dc2626">[0]</button>
+    <button class="btn-blue btn-pill" onclick="highlightClass(1)" style="background:#2563eb">[1]</button>
+    <button class="btn-blue btn-pill" onclick="highlightClass(2)" style="background:#059669">[2]</button>
+  </div>
+  <div class="eq-cols" id="eqCols"></div>
+  <p id="eqInfo" style="font-size:.9em;margin-top:8px;color:var(--gray)">Click a class above!</p>
+</div>
+<p><strong>Key observation:</strong> \([3] = [0]\) since \(3\,R\,0\). Elements in the same class give the same class.</p>
+</div></div>
+
+<div class="box exer"><div class="box-title">Exercise</div><div class="box-body">
+<p>Let \(R\) be an equivalence relation on \(A\). Prove that if \(a\,R\,b\), then \([a] = [b]\).</p>
+<p><em>Hint: Double containment. Use transitivity with \(a\,R\,b\).</em></p>
+</div></div>
+
+<!-- ==================== SECTION: Partitions ==================== -->
+<h2>7 &nbsp; Partitions</h2>
+
+<div class="box def"><div class="box-title">Definition: Partition</div><div class="box-body">
+<p>A <strong>partition</strong> of \(A\) is a collection of nonempty, pairwise disjoint subsets whose union is \(A\).</p>
+</div></div>
+
+<div class="box thm"><div class="box-title">Theorem: Equivalence Classes Form a Partition</div><div class="box-body">
+<p>The equivalence classes of an equivalence relation on \(A\) form a partition of \(A\).</p>
+<p>Conversely, every partition determines an equivalence relation.</p>
+</div></div>
+
+<div class="box note"><div class="box-title">Key Insight</div><div class="box-body">
+<p>There is a <strong>one-to-one correspondence</strong> between equivalence relations on \(A\) and partitions of \(A\). Two sides of the same coin!</p>
+</div></div>
+
+<!-- ==================== SECTION: Z_n ==================== -->
+<h2>8 &nbsp; The Sets \(\mathbb{Z}_n\)</h2>
+
+<div class="box def"><div class="box-title">Definition: \(\mathbb{Z}_n\)</div><div class="box-body">
+$$\mathbb{Z}_n = \{[0], [1], \ldots, [n-1]\}$$
+<p>Operations: \([a] \oplus [b] = [a+b]\), \(\;[a] \odot [b] = [a \cdot b]\).</p>
+</div></div>
+
+<div class="box ex"><div class="box-title">Interactive: Arithmetic in \(\mathbb{Z}_n\)</div><div class="box-body">
+<p>Choose \(n\) and explore the operation tables. <span style="color:var(--red)">Red cells</span> show zero divisors!</p>
+<div class="interactive-area" style="border:none;padding:10px">
+  <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px">
+    <span>\(n =\)</span>
+    <span id="znBtns"></span>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:24px;justify-content:center">
+    <div><h4 style="text-align:center;margin-bottom:6px">Addition \(\oplus\)</h4><table id="znAdd"></table></div>
+    <div><h4 style="text-align:center;margin-bottom:6px">Multiplication \(\odot\)</h4><table id="znMul"></table></div>
+  </div>
+  <p id="znInfo" style="font-size:.9em;margin-top:10px"></p>
+</div>
+</div></div>
+
+<!-- ==================== SECTION: Functions ==================== -->
+<h2>9 &nbsp; Functions</h2>
+
+<div class="box def"><div class="box-title">Definition: Function</div><div class="box-body">
+<p>A <strong>function</strong> \(f : A \to B\) is a relation such that:</p>
+<p>1. Every element of \(A\) has <strong>some</strong> output. <span style="color:var(--gray);font-size:.85em">— every input mapped</span></p>
+<p>2. No element of \(A\) has <strong>more than one</strong> output. <span style="color:var(--gray);font-size:.85em">— unique output</span></p>
+</div></div>
+
+<h3>Interactive: Is It a Function?</h3>
+<p>Click each diagram to check whether it represents a valid function:</p>
+<div class="fn-container" id="fnCards"></div>
+<p id="fnExplanation" style="text-align:center;font-size:.9em;margin-top:4px"></p>
+
+<!-- ==================== SECTION: Injective/Surjective/Bijective ==================== -->
+<h2>10 &nbsp; Injective, Surjective, and Bijective</h2>
+
+<div class="box def"><div class="box-title">Definition: Injective, Surjective, Bijective</div><div class="box-body">
+<p><strong>Injective</strong> (one-to-one): \(f(x) = f(y) \Rightarrow x = y\). <span style="color:var(--gray);font-size:.85em">— No collisions</span></p>
+<p><strong>Surjective</strong> (onto): \(\forall y \in B,\; \exists x \in A\) with \(f(x) = y\). <span style="color:var(--gray);font-size:.85em">— Everything hit</span></p>
+<p><strong>Bijective</strong>: Both injective <em>and</em> surjective. <span style="color:var(--gray);font-size:.85em">— Perfect pairing</span></p>
+</div></div>
+
+<h3>Interactive: Classify the Function</h3>
+<p>Click each example to see its classification:</p>
+<div class="fn-container" id="bijCards"></div>
+<p id="bijExplanation" style="text-align:center;font-size:.9em;margin-top:4px"></p>
+
+<div class="box thm"><div class="box-title">Theorem: Size Constraints</div><div class="box-body">
+<p>For finite sets: injection \(\Rightarrow |A| \leq |B|\), surjection \(\Rightarrow |A| \geq |B|\), bijection \(\Rightarrow |A| = |B|\).</p>
+</div></div>
+
+<div class="box exer"><div class="box-title">Questions to Think About</div><div class="box-body">
+<p><strong>Q1:</strong> Can there be a surjection from a 2-element set to a 3-element set?</p>
+<p style="color:var(--gray);font-size:.9em"><em>No — not enough inputs to cover all outputs.</em></p>
+<p><strong>Q2:</strong> Can there be an injection from a 3-element set to a 2-element set?</p>
+<p style="color:var(--gray);font-size:.9em"><em>No — pigeonhole principle forces a collision.</em></p>
+</div></div>
+
+<!-- ==================== SECTION: Exercises ==================== -->
+<h2>11 &nbsp; Exercises</h2>
+
+<div class="box exer"><div class="box-title">Exercises for Lecture 02</div><div class="box-body">
+<p><strong>Exercise 1.</strong> Let \(A = \{1,2,3\}\). How many relations on \(A\)? How many reflexive?</p>
+<p><strong>Exercise 2.</strong> Show \(a\,R\,b \iff a+b\) is even defines an equivalence relation on \(\mathbb{Z}\).</p>
+<p><strong>Exercise 3.</strong> Prove: if \(a\,R\,b\), then \([a] = [b]\).</p>
+<p><strong>Exercise 4.</strong> Build addition/multiplication tables for \(\mathbb{Z}_5\). Zero divisors?</p>
+<p><strong>Exercise 5.</strong> Is \(f(x) = x^2\) on \(\mathbb{R}\) injective? Surjective?</p>
+<p><strong>Exercise 6.</strong> Show \(f(x) = 2x+3\) is a bijection. Find its inverse.</p>
+<p><strong>Exercise 7.</strong> Prove: if \(f:A\to B\) and \(g:B\to C\) are injective, then \(g \circ f\) is injective.</p>
+</div></div>
+
+<hr class="divider">
+<p class="center" style="color:var(--gray);font-size:.85em">Math 205: Real Analysis — Lecture 02</p>
+
+<!-- ==================== SCRIPTS ==================== -->
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+  renderMathInElement(document.body,{delimiters:[
+    {left:"$$",right:"$$",display:true},{left:"\\[",right:"\\]",display:true},
+    {left:"\\(",right:"\\)",display:false},{left:"$",right:"$",display:false}
+  ]});
+  initAll();
+});
+
+function initAll(){showRelation(0);checkMod();buildModLine();buildPropBtns();buildEqCols();buildZn(4);buildFnCards();buildBijCards();highlightClass(0)}
+
+// === Cartesian Product Grid ===
+function showPair(a,b,el){
+  document.querySelectorAll('.grid-dot').forEach(d=>{d.setAttribute('fill','#3b82f6');d.setAttribute('r','8')});
+  el.setAttribute('fill','#dc2626');el.setAttribute('r','10');
+  document.getElementById('pairLabel').textContent='('+a+', '+b+')';
+  document.getElementById('cartInfo').textContent='Selected: ('+a+', '+b+')';
+}
+
+// === Relations ===
+const rels=[
+  {pairs:[[0,0],[1,1]],label:'R₁'},
+  {pairs:[[0,2],[1,2]],label:'R₂'},
+  {pairs:[],label:'R₃ = ∅'}
+];
+const relA=['1','2'],relB=['α','β','γ'];
+function showRelation(idx){
+  document.querySelectorAll('.rel-card').forEach((c,i)=>c.classList.toggle('active',i===idx));
+  let svg=document.getElementById('relSvg');
+  let h='';
+  // A dots
+  relA.forEach((a,i)=>{
+    let y=50+i*60;
+    h+=`<circle cx="40" cy="${y}" r="6" fill="#2563eb"/><text x="20" y="${y+5}" font-size="13" fill="#2563eb" font-weight="bold">${a}</text>`;
+  });
+  // B dots
+  relB.forEach((b,i)=>{
+    let y=30+i*50;
+    h+=`<circle cx="220" cy="${y}" r="6" fill="#dc2626"/><text x="240" y="${y+5}" font-size="13" fill="#dc2626" font-weight="bold">${b}</text>`;
+  });
+  // Labels
+  h+=`<text x="40" y="20" text-anchor="middle" font-size="12" fill="#2563eb" font-weight="bold">A</text>`;
+  h+=`<text x="220" y="20" text-anchor="middle" font-size="12" fill="#dc2626" font-weight="bold">B</text>`;
+  // Arrows
+  rels[idx].pairs.forEach(([ai,bi])=>{
+    let y1=50+ai*60,y2=30+bi*50;
+    h+=`<line x1="48" y1="${y1}" x2="212" y2="${y2}" stroke="#059669" stroke-width="2" marker-end="url(#arrowG)"/>`;
+  });
+  h+=`<defs><marker id="arrowG" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker></defs>`;
+  svg.innerHTML=h;
+}
+
+// === Mod 3 checker ===
+function checkMod(){
+  let a=+document.getElementById('modA').value,b=+document.getElementById('modB').value;
+  let diff=b-a,div=diff%3===0;
+  let el=document.getElementById('modResult');
+  el.innerHTML=`\\(b - a = ${b} - ${a} = ${diff}\\). Is \\(3 \\mid ${diff}\\)? `+
+    (div?`<span class="tag tag-yes">Yes! ${a} R ${b}</span>`:`<span class="tag tag-no">No. ${a} is not related to ${b}</span>`);
+  renderMathInElement(el,{delimiters:[{left:"\\(",right:"\\)",display:false}]});
+}
+
+// === Mod number line ===
+function buildModLine(){
+  let svg=document.getElementById('modLine');
+  let h=`<line x1="10" y1="30" x2="490" y2="30" stroke="#374151" stroke-width="2" marker-end="url(#arrNL)"/>`;
+  h+=`<defs><marker id="arrNL" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#374151"/></marker></defs>`;
+  const cols=['#dc2626','#2563eb','#059669'];
+  const labels=['[0]','[1]','[2]'];
+  for(let i=0;i<=12;i++){
+    let x=20+i*36;
+    h+=`<circle cx="${x}" cy="30" r="5" fill="${cols[i%3]}"/>`;
+    h+=`<text x="${x}" y="50" text-anchor="middle" font-size="10" fill="#374151">${i}</text>`;
+  }
+  // Legend
+  for(let c=0;c<3;c++){
+    let x=80+c*140;
+    h+=`<rect x="${x}" y="2" width="10" height="10" rx="2" fill="${cols[c]}"/>`;
+    h+=`<text x="${x+14}" y="11" font-size="10" fill="${cols[c]}" font-weight="bold">${labels[c]}: remainder ${c}</text>`;
+  }
+  svg.innerHTML=h;
+}
+
+// === Property visualizer ===
+const props=[
+  {name:'Reflexive',desc:'Every element is related to itself: a loop on each node.',draw:s=>{
+    s.innerHTML=`<circle cx="150" cy="80" r="12" fill="#2563eb"/><text x="150" y="115" text-anchor="middle" font-size="13" fill="#374151">a</text>`+
+    `<path d="M 138 72 C 120 30 180 30 162 72" stroke="#059669" stroke-width="2.5" fill="none" marker-end="url(#ap)"/>`+
+    `<defs><marker id="ap" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker></defs>`;
+  }},
+  {name:'Symmetric',desc:'If a→b then b→a. The relation goes both ways.',draw:s=>{
+    s.innerHTML=`<circle cx="80" cy="80" r="12" fill="#2563eb"/><text x="80" y="115" text-anchor="middle" font-size="13">a</text>`+
+    `<circle cx="220" cy="80" r="12" fill="#2563eb"/><text x="220" y="115" text-anchor="middle" font-size="13">b</text>`+
+    `<path d="M 94 72 Q 150 40 206 72" stroke="#059669" stroke-width="2.5" fill="none" marker-end="url(#ap)"/>`+
+    `<path d="M 206 88 Q 150 120 94 88" stroke="#059669" stroke-width="2.5" fill="none" marker-end="url(#ap)"/>`+
+    `<defs><marker id="ap" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker></defs>`;
+  }},
+  {name:'Antisymmetric',desc:'If a→b AND b→a, then a must equal b. Two-way forces equality.',draw:s=>{
+    s.innerHTML=`<circle cx="80" cy="80" r="12" fill="#2563eb"/><text x="80" y="115" text-anchor="middle" font-size="13">a</text>`+
+    `<circle cx="220" cy="80" r="12" fill="#2563eb"/><text x="220" y="115" text-anchor="middle" font-size="13">b</text>`+
+    `<path d="M 94 72 Q 150 40 206 72" stroke="#059669" stroke-width="2.5" fill="none" marker-end="url(#ap)"/>`+
+    `<path d="M 206 88 Q 150 120 94 88" stroke="#dc2626" stroke-width="2" fill="none" stroke-dasharray="6,4" marker-end="url(#apr)"/>`+
+    `<text x="150" y="145" text-anchor="middle" font-size="11" fill="#dc2626" font-weight="bold">only if a = b</text>`+
+    `<defs><marker id="ap" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker>`+
+    `<marker id="apr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#dc2626"/></marker></defs>`;
+  }},
+  {name:'Transitive',desc:'If a→b and b→c, then a→c. The relation chains together.',draw:s=>{
+    s.innerHTML=`<circle cx="60" cy="120" r="12" fill="#2563eb"/><text x="60" y="150" text-anchor="middle" font-size="13">a</text>`+
+    `<circle cx="150" cy="40" r="12" fill="#2563eb"/><text x="150" y="28" text-anchor="middle" font-size="13">b</text>`+
+    `<circle cx="240" cy="120" r="12" fill="#2563eb"/><text x="240" y="150" text-anchor="middle" font-size="13">c</text>`+
+    `<line x1="72" y1="112" x2="140" y2="50" stroke="#059669" stroke-width="2.5" marker-end="url(#ap)"/>`+
+    `<line x1="160" y1="50" x2="228" y2="112" stroke="#059669" stroke-width="2.5" marker-end="url(#ap)"/>`+
+    `<line x1="74" y1="124" x2="226" y2="124" stroke="#d97706" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#apo)"/>`+
+    `<text x="150" y="140" text-anchor="middle" font-size="10" fill="#d97706" font-weight="bold">implied</text>`+
+    `<defs><marker id="ap" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#059669"/></marker>`+
+    `<marker id="apo" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="#d97706"/></marker></defs>`;
+  }}
+];
+function buildPropBtns(){
+  let c=document.getElementById('propBtns');
+  props.forEach((p,i)=>{
+    let b=document.createElement('button');
+    b.className='btn-blue btn-pill'+(i===0?' active':'');
+    b.textContent=p.name;
+    b.onclick=()=>{
+      c.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      p.draw(document.getElementById('propSvg'));
+      document.getElementById('propDesc').textContent=p.desc;
+    };
+    c.appendChild(b);
+  });
+  props[0].draw(document.getElementById('propSvg'));
+  document.getElementById('propDesc').textContent=props[0].desc;
+}
+
+// === Equivalence classes ===
+function buildEqCols(){
+  let c=document.getElementById('eqCols');c.innerHTML='';
+  const data=[
+    {label:'[0]',color:'#dc2626',els:[-6,-3,0,3,6,9]},
+    {label:'[1]',color:'#2563eb',els:[-5,-2,1,4,7,10]},
+    {label:'[2]',color:'#059669',els:[-4,-1,2,5,8,11]}
+  ];
+  data.forEach(d=>{
+    let col=document.createElement('div');
+    col.className='eq-col';col.id='eqCol'+d.label[1];
+    col.style.borderColor=d.color;
+    col.innerHTML=`<h4 style="color:${d.color}">${d.label}</h4>`+d.els.map(e=>`<p>${e}</p>`).join('')+`<p>⋮</p>`;
+    c.appendChild(col);
+  });
+}
+function highlightClass(n){
+  document.querySelectorAll('.eq-col').forEach((c,i)=>{
+    c.classList.toggle('active',i===n);
+    c.style.background=i===n?(['#fee2e2','#dbeafe','#d1fae5'][n]):'#fff';
+  });
+  document.getElementById('eqInfo').textContent='Every integer belongs to exactly one class. ['+n+'] contains all integers with remainder '+n+' when divided by 3.';
+}
+
+// === Z_n tables ===
+function buildZn(n){
+  // Buttons
+  let bb=document.getElementById('znBtns');bb.innerHTML='';
+  for(let k=2;k<=6;k++){
+    let b=document.createElement('button');
+    b.className='btn-blue btn-sm'+(k===n?' active':'');
+    b.textContent=k;
+    b.onclick=()=>buildZn(k);
+    bb.appendChild(b);
+  }
+  // Addition table
+  let at=document.getElementById('znAdd');at.innerHTML='';
+  let hdr='<tr><th>⊕</th>';
+  for(let j=0;j<n;j++)hdr+=`<th>[${j}]</th>`;
+  hdr+='</tr>';at.innerHTML+=hdr;
+  for(let i=0;i<n;i++){
+    let row=`<tr><th>[${i}]</th>`;
+    for(let j=0;j<n;j++)row+=`<td>[${(i+j)%n}]</td>`;
+    row+='</tr>';at.innerHTML+=row;
+  }
+  // Multiplication table
+  let mt=document.getElementById('znMul');mt.innerHTML='';
+  mt.innerHTML+=hdr.replace('⊕','⊙');
+  let hasZD=false;
+  for(let i=0;i<n;i++){
+    let row=`<tr><th>[${i}]</th>`;
+    for(let j=0;j<n;j++){
+      let v=(i*j)%n;
+      let isZD=v===0&&i!==0&&j!==0;
+      if(isZD)hasZD=true;
+      row+=`<td${isZD?' class="highlight-cell"':''}>[${v}]</td>`;
+    }
+    row+='</tr>';mt.innerHTML+=row;
+  }
+  document.getElementById('znInfo').innerHTML=hasZD?
+    '<span class="tag tag-no">⚠ Zero divisors found!</span> <span style="color:var(--red)">Red cells</span> show nonzero elements whose product is [0].':
+    '<span class="tag tag-yes">✓ No zero divisors!</span> \\(\\mathbb{Z}_{'+n+'}\\) behaves nicely.';
+  renderMathInElement(document.getElementById('znInfo'),{delimiters:[{left:"\\(",right:"\\)",display:false}]});
+}
+
+// === Function diagrams ===
+function drawFnSvg(pairs,aLabels,bLabels,w){
+  w=w||180;
+  let h=`<defs><marker id="afn" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5" fill="#059669"/></marker></defs>`;
+  aLabels.forEach((a,i)=>{
+    let y=25+i*35;
+    h+=`<circle cx="30" cy="${y}" r="5" fill="#2563eb"/><text x="14" y="${y+4}" font-size="11" fill="#2563eb" font-weight="bold">${a}</text>`;
+  });
+  bLabels.forEach((b,i)=>{
+    let y=25+i*35;
+    h+=`<circle cx="${w-30}" cy="${y}" r="5" fill="#dc2626"/><text x="${w-14}" y="${y+4}" font-size="11" fill="#dc2626" font-weight="bold">${b}</text>`;
+  });
+  pairs.forEach(([ai,bi])=>{
+    let y1=25+ai*35,y2=25+bi*35;
+    h+=`<line x1="37" y1="${y1}" x2="${w-37}" y2="${y2}" stroke="#059669" stroke-width="2" marker-end="url(#afn)"/>`;
+  });
+  return h;
+}
+
+const fnExamples=[
+  {label:'✓ Function',pairs:[[0,0],[1,1]],a:['1','2'],b:['α','β','γ'],ok:true,why:'Every input has exactly one output.'},
+  {label:'✗ Missing output',pairs:[[0,0]],a:['1','2'],b:['α','β','γ'],ok:false,why:'Element 2 has no output — violates rule 1.'},
+  {label:'✗ Two outputs',pairs:[[0,0],[0,1],[1,2]],a:['1','2'],b:['α','β','γ'],ok:false,why:'Element 1 maps to both α and β — violates rule 2.'}
+];
+function buildFnCards(){
+  let c=document.getElementById('fnCards');c.innerHTML='';
+  fnExamples.forEach((f,i)=>{
+    let card=document.createElement('div');
+    card.className='fn-card'+(i===0?' active':'');
+    card.innerHTML=`<h4 style="color:${f.ok?'var(--green)':'var(--red)'}">${f.label}</h4><svg viewBox="0 0 180 ${Math.max(f.a.length,f.b.length)*35+20}" width="160">${drawFnSvg(f.pairs,f.a,f.b)}</svg>`;
+    card.onclick=()=>{
+      c.querySelectorAll('.fn-card').forEach(x=>x.classList.remove('active'));
+      card.classList.add('active');
+      document.getElementById('fnExplanation').innerHTML=f.ok?'<span class="tag tag-yes">'+f.why+'</span>':'<span class="tag tag-no">'+f.why+'</span>';
+    };
+    c.appendChild(card);
+  });
+  document.getElementById('fnExplanation').innerHTML='<span class="tag tag-yes">'+fnExamples[0].why+'</span>';
+}
+
+// === Bijection classifier ===
+const bijExamples=[
+  {label:'Injective, not surjective',pairs:[[0,0],[1,1]],a:['1','2'],b:['α','β','γ'],inj:true,sur:false,why:'Different inputs → different outputs ✓. But γ is never hit ✗.'},
+  {label:'Not injective',pairs:[[0,0],[1,0]],a:['1','2'],b:['α','β','γ'],inj:false,sur:false,why:'Both 1 and 2 map to α — collision! Not injective.'},
+  {label:'Surjective, not injective',pairs:[[0,0],[1,0],[2,1]],a:['1','2','3'],b:['α','β'],inj:false,sur:true,why:'Every output hit ✓. But 1 and 2 collide at α ✗.'},
+];
+function buildBijCards(){
+  let c=document.getElementById('bijCards');c.innerHTML='';
+  bijExamples.forEach((f,i)=>{
+    let card=document.createElement('div');
+    card.className='fn-card'+(i===0?' active':'');
+    let svgH=Math.max(f.a.length,f.b.length)*35+20;
+    card.innerHTML=`<h4 style="font-size:.8em">${f.label}</h4><svg viewBox="0 0 180 ${svgH}" width="150">${drawFnSvg(f.pairs,f.a,f.b)}</svg>`;
+    card.onclick=()=>{
+      c.querySelectorAll('.fn-card').forEach(x=>x.classList.remove('active'));
+      card.classList.add('active');
+      let tags=(f.inj?'<span class="prop-badge prop-yes">✓ Injective</span>':'<span class="prop-badge prop-no">✗ Not Injective</span>')+
+               (f.sur?'<span class="prop-badge prop-yes">✓ Surjective</span>':'<span class="prop-badge prop-no">✗ Not Surjective</span>');
+      document.getElementById('bijExplanation').innerHTML=tags+'<br><span style="font-size:.85em">'+f.why+'</span>';
+    };
+    c.appendChild(card);
+  });
+  let f=bijExamples[0];
+  document.getElementById('bijExplanation').innerHTML='<span class="prop-badge prop-yes">✓ Injective</span><span class="prop-badge prop-no">✗ Not Surjective</span><br><span style="font-size:.85em">'+f.why+'</span>';
+}
+
+// === Proof toggles ===
+function toggleProof(el){el.classList.toggle('open');el.nextElementSibling.classList.toggle('show')}
+</script>
+</body>
+</html>
