@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calculus — Traffic Light Feedback</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{min-height:100vh;background:linear-gradient(135deg,#f8fafc,#e2e8f0);font-family:'Segoe UI',system-ui,sans-serif}
+  .hdr{background:linear-gradient(135deg,#1e293b,#334155);color:#fff;padding:28px 24px 20px;border-bottom:4px solid #3b82f6}
+  .mx{max-width:720px;margin:0 auto}
+  .hdr h1{margin:0;font-size:22px;font-weight:700;letter-spacing:-.5px}
+  .hdr p{margin:0;font-size:14px;color:#94a3b8;line-height:1.5}
+  .legend{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap}
+  .legend-item{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);padding:5px 12px;border-radius:20px;font-size:13px}
+  .legend-item b{font-weight:600}
+  .legend-item span.desc{color:#94a3b8}
+  .main{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+  .card{background:#fff;border-radius:12px;padding:16px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+  .card h3{margin:0 0 12px;font-size:15px;color:#1e293b}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  label.f{font-size:13px;font-weight:600;color:#475569;display:block;margin-bottom:6px}
+  input.fi{width:100%;padding:10px 14px;border-radius:8px;border:1px solid #d1d5db;font-size:14px;outline:none}
+  .prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .prog-row span{font-size:13px;color:#475569}.prog-row .sub{color:#64748b}
+  .prog-bar{height:8px;background:#e2e8f0;border-radius:4px;overflow:hidden}
+  .prog-fill{height:100%;border-radius:4px;transition:width .3s}
+  .sum-bar{display:flex;height:28px;border-radius:14px;overflow:hidden;width:100%;margin-top:10px}
+  .sum-seg{display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:600}
+  .week{background:#fff;border-radius:12px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #e2e8f0;transition:border-color .3s}
+  .week-hdr{padding:14px 16px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+  .week-left{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+  .week-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+  .week-title{font-size:14px;font-weight:600;color:#1e293b}
+  .week-sub{font-size:12px;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .week-right{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:8px}
+  .tag{font-size:11px;color:#94a3b8;background:#f1f5f9;padding:2px 8px;border-radius:10px}
+  .arrow{color:#94a3b8;font-size:18px;transition:transform .2s;display:inline-block}
+  .week-body{padding:0 16px 16px}
+  .week-body p{font-size:13px;color:#64748b;margin:0 0 14px;line-height:1.6}
+  .btn-row{display:flex;gap:8px;margin-bottom:12px}
+  .rbtn{flex:1;padding:12px 8px;border-radius:10px;border:2px solid #e2e8f0;background:#fff;cursor:pointer;transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:4px}
+  .rbtn .em{font-size:22px}
+  .rbtn .lb{font-size:12px;font-weight:700;color:#64748b}
+  .rbtn.sel-green{border-color:#22c55e;background:#dcfce7}.rbtn.sel-green .lb{color:#22c55e}
+  .rbtn.sel-yellow{border-color:#eab308;background:#fef9c3}.rbtn.sel-yellow .lb{color:#eab308}
+  .rbtn.sel-red{border-color:#ef4444;background:#fee2e2}.rbtn.sel-red .lb{color:#ef4444}
+  .cmt-label{font-size:12px;font-weight:600;color:#64748b;display:block;margin-bottom:4px}
+  textarea.cmt{width:100%;padding:8px 12px;border-radius:8px;border:1px solid #d1d5db;font-size:13px;resize:vertical;outline:none;font-family:inherit}
+  .submit-btn{width:100%;padding:16px;margin-top:16px;border-radius:12px;border:none;color:#fff;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s}
+  .submit-btn.active{background:linear-gradient(135deg,#3b82f6,#2563eb);box-shadow:0 4px 12px rgba(59,130,246,.3)}
+  .submit-btn.disabled{background:#cbd5e1;cursor:not-allowed}
+  .submit-btn.loading{opacity:.7}
+  .err-box{background:#fee2e2;border:1px solid #fca5a5;border-radius:10px;padding:12px;margin-top:12px;font-size:13px;color:#991b1b}
+  .success-box{background:#d1fae5;border:1px solid #6ee7b7;border-radius:12px;padding:16px;margin-bottom:16px;font-size:14px;color:#065f46;display:flex;align-items:center;gap:10px}
+  .tabs{display:flex;gap:8px;margin-bottom:16px}
+  .tab{padding:8px 20px;border-radius:20px;border:none;font-weight:600;font-size:14px;cursor:pointer}
+  .tab.on{background:#3b82f6;color:#fff}.tab.off{background:#e2e8f0;color:#475569}
+  .stat-row{display:flex;justify-content:space-around;margin-top:16px}
+  .stat{text-align:center}
+  .stat .num{font-size:28px;font-weight:700}
+  .stat .lbl{font-size:12px;color:#64748b}
+  .attn-item{padding:10px 12px;border-radius:8px;margin-bottom:8px;border-left:3px solid}
+  .attn-title{font-size:13px;font-weight:600;color:#1e293b}
+  .attn-cmt{font-size:12px;color:#64748b;margin-top:4px;font-style:italic}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+  .grid-item{padding:10px 12px;border-radius:8px;border:1px solid #e2e8f0}
+  .grid-item .gi-t{font-size:12px;font-weight:600;color:#1e293b}
+  .grid-item .gi-s{font-size:11px;color:#64748b;margin-top:2px}
+  .reset-btn{width:100%;padding:14px;margin-top:16px;border-radius:12px;border:2px solid #e2e8f0;background:#fff;color:#64748b;font-size:14px;font-weight:600;cursor:pointer}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="mx">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+      <span style="font-size:26px">🚦</span>
+      <h1>Calculus — Traffic Light Feedback</h1>
+    </div>
+    <p>Rate your understanding of each week's material. Your responses are sent directly to your instructor's Google Sheet.</p>
+    <div class="legend">
+      <div class="legend-item">🟢 <b>Got it!</b> <span class="desc">— I understand this well</span></div>
+      <div class="legend-item">🟡 <b>Somewhat</b> <span class="desc">— Parts are unclear</span></div>
+      <div class="legend-item">🔴 <b>Need help</b> <span class="desc">— I'm lost on this</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="main" id="app"></div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx2VatagPqZ3poFDAPHAPR2GNPqoABe-zJlhGlkX0RnVWHqGhhi0zzqiQJIwy_mLa5M/exec";
+
+const W = [
+  {w:1,t:"Introduction to Calculus",d:"Introduction to Functions, Domain and Range"},
+  {w:2,t:"Functions & Limits Intro",d:"Algebra of functions, Types of functions, Injective, Surjective, Inverses, Compositions, Cardinalities, Introduction to Limits, Epsilon Delta"},
+  {w:3,t:"Computing Limits",d:"Limit Laws, Squeeze Theorem, Infinite Limits, Limits at infinity, Asymptotes, Continuous functions and their properties"},
+  {w:4,t:"Derivatives Intro",d:"IVT, Location of roots, Bisection method, Derivative by definition, Graphical analysis, Rules of Differentiation, Linear approximation, Higher order derivatives, Intro to differential equations"},
+  {w:5,t:"Chain Rule & Applications",d:"Chain Rule and applications, Implicit Differentiation, Differentials, Error Estimation, Related Rates"},
+  {w:6,t:"Extreme Values & MVT",d:"Continuous functions on compact domain, Absolute & Relative Extremas, EVT, Fermat's Theorem, Rolle's Theorem, Mean Value Theorem with proof and applications"},
+  {w:7,t:"Graph Shape & Optimization",d:"Shape of graph using derivatives, Critical points, Inflection points, Intervals of increase/decrease, Concavity, First & Second derivative tests, Speeding up/Slowing down, Optimization"},
+  {w:8,t:"Taylor Series & L'Hôpital",d:"Taylor Series Expansion, Higher order approximations, Interval & radius of convergence, Differentiating/integrating Power series, Finding sums using series, L'Hôpital's Rule"},
+  {w:9,t:"Antiderivatives & Integration",d:"Antiderivatives, Analysis of motion given acceleration/velocity, Integration by substitution, Integration by parts, Definite integrals as Net Area"},
+  {w:10,t:"Definite Integrals & Riemann",d:"Properties of definite integral, Riemann sums, Definite integral as a limit of Riemann sums"},
+  {w:11,t:"FTC & Applications",d:"Fundamental Theorem of Calculus (Parts 1 & 2) with proofs, Area between curves, Arc length, Average value of function"},
+  {w:12,t:"Volumes & Intro to ODEs",d:"Volume of Revolution (Disk, Washer, Shell), Introduction to ODEs, Separable ODEs, Analysis of autonomous ODEs"},
+  {w:13,t:"ODEs: Linear & Second Order",d:"Linear, Bernoulli, Substitution & Homogeneous ODEs, Second order ODEs with constant coefficients, Mass Spring System"},
+  {w:14,t:"Systems of ODEs & More",d:"System of first order linear homogeneous ODEs, Phase Plane, Predator Prey Models, Feynman Trick for evaluating integrals"}
+];
+
+const C = {
+  green:{bg:"#22c55e",light:"#dcfce7",border:"#86efac",emoji:"🟢",label:"Got it!"},
+  yellow:{bg:"#eab308",light:"#fef9c3",border:"#fde047",emoji:"🟡",label:"Somewhat"},
+  red:{bg:"#ef4444",light:"#fee2e2",border:"#fca5a5",emoji:"🔴",label:"Need help"}
+};
+
+let ratings={}, comments={}, expanded=null, submitted=false, submitting=false, view="rate", studentName="", studentId="";
+const app = document.getElementById("app");
+
+function getCounts(){
+  let c={green:0,yellow:0,red:0};
+  Object.values(ratings).forEach(r=>c[r]++);
+  return c;
+}
+
+function sumBar(counts,total){
+  if(!total) return "";
+  let h="";
+  ["green","yellow","red"].forEach(k=>{
+    let p=(counts[k]/total)*100;
+    if(p>0) h+=`<div class="sum-seg" style="width:${p}%;background:${C[k].bg}">${p>8?Math.round(p)+"%":""}</div>`;
+  });
+  return `<div class="sum-bar">${h}</div>`;
+}
+
+function render(){
+  let counts=getCounts(), total=Object.keys(ratings).length, allRated=total===W.length;
+  let html="";
+
+  if(submitted){
+    html+=`<div class="tabs">
+      <button class="tab ${view==="rate"?"on":"off"}" onclick="view='rate';render()">My Ratings</button>
+      <button class="tab ${view==="summary"?"on":"off"}" onclick="view='summary';render()">Summary</button>
+    </div>`;
+  }
+
+  if(view==="rate"){
+    // Student info
+    html+=`<div class="card"><div class="row">
+      <div><label class="f">Name</label><input class="fi" value="${esc(studentName)}" oninput="studentName=this.value" placeholder="Your name..."></div>
+      <div><label class="f">Student ID</label><input class="fi" value="${esc(studentId)}" oninput="studentId=this.value" placeholder="e.g. 20251234"></div>
+    </div></div>`;
+
+    // Progress
+    html+=`<div class="card">
+      <div class="prog-row"><span style="font-weight:600">Progress</span><span class="sub">${total} / ${W.length} rated</span></div>
+      <div class="prog-bar"><div class="prog-fill" style="width:${(total/W.length)*100}%;background:${allRated?"#22c55e":"#3b82f6"}"></div></div>
+      ${total>0?sumBar(counts,total):""}
+    </div>`;
+
+    // Weeks
+    W.forEach(wk=>{
+      let r=ratings[wk.w], isExp=expanded===wk.w, bc=r?C[r].bg:"#e2e8f0";
+      let iconBg=r?C[r].light:"#f1f5f9", iconClr=r?C[r].bg:"#64748b";
+      html+=`<div class="week" style="border-left-color:${bc}">
+        <div class="week-hdr" onclick="expanded=${isExp?"null":wk.w};render()">
+          <div class="week-left">
+            <span class="week-icon" style="background:${iconBg};color:${iconClr}">${r?C[r].emoji:wk.w}</span>
+            <div style="min-width:0">
+              <div class="week-title">Week ${wk.w}: ${esc(wk.t)}</div>
+              ${!isExp?`<div class="week-sub">${esc(wk.d)}</div>`:""}
+            </div>
+          </div>
+          <div class="week-right">
+            ${!isExp&&!r?'<span class="tag">Not rated</span>':""}
+            <span class="arrow" style="transform:rotate(${isExp?180:0}deg)">▾</span>
+          </div>
+        </div>`;
+      if(isExp){
+        html+=`<div class="week-body">
+          <p>${esc(wk.d)}</p>
+          <div class="btn-row">`;
+        ["green","yellow","red"].forEach(k=>{
+          let sel=r===k?` sel-${k}`:"";
+          html+=`<button class="rbtn${sel}" onclick="event.stopPropagation();ratings[${wk.w}]='${k}';render()">
+            <span class="em">${C[k].emoji}</span><span class="lb">${C[k].label}</span>
+          </button>`;
+        });
+        html+=`</div>`;
+        if(r==="yellow"||r==="red"){
+          html+=`<label class="cmt-label">What specifically is confusing? (optional)</label>
+          <textarea class="cmt" rows="2" placeholder="e.g., I don't understand when to apply the chain rule vs. product rule..." oninput="comments[${wk.w}]=this.value">${esc(comments[wk.w]||"")}</textarea>`;
+        }
+        html+=`</div>`;
+      }
+      html+=`</div>`;
+    });
+
+    // Submit
+    let btnCls=allRated&&!submitting?"active":"disabled";
+    if(submitting) btnCls+=" loading";
+    let btnTxt=submitting?"Submitting...":allRated?"Submit Feedback ✓":`Rate all weeks to submit (${W.length-total} remaining)`;
+    html+=`<button class="submit-btn ${btnCls}" onclick="handleSubmit()" ${!allRated||submitting?"disabled":""}>${btnTxt}</button>`;
+
+  } else if(view==="summary"){
+    html+=`<div class="success-box"><span style="font-size:22px">✅</span><div><strong>Submitted successfully!</strong> Your feedback has been recorded in the instructor's Google Sheet.</div></div>`;
+
+    html+=`<div class="card">
+      <h2 style="margin:0 0 4px;font-size:18px;color:#1e293b">${esc(studentName||"Anonymous")}'s Feedback</h2>
+      ${studentId?`<p style="margin:0 0 4px;font-size:13px;color:#94a3b8">ID: ${esc(studentId)}</p>`:""}
+      <p style="margin:0 0 16px;font-size:13px;color:#94a3b8">Submitted ${new Date().toLocaleString()}</p>
+      ${sumBar(getCounts(),Object.keys(ratings).length)}
+      <div class="stat-row">
+        <div class="stat"><div class="num" style="color:#22c55e">${getCounts().green}</div><div class="lbl">Got it!</div></div>
+        <div class="stat"><div class="num" style="color:#eab308">${getCounts().yellow}</div><div class="lbl">Somewhat</div></div>
+        <div class="stat"><div class="num" style="color:#ef4444">${getCounts().red}</div><div class="lbl">Need help</div></div>
+      </div>
+    </div>`;
+
+    let attn=W.filter(wk=>ratings[wk.w]==="red"||ratings[wk.w]==="yellow");
+    if(attn.length){
+      html+=`<div class="card"><h3>⚠️ Topics Needing Review</h3>`;
+      attn.forEach(wk=>{
+        let r=ratings[wk.w];
+        html+=`<div class="attn-item" style="background:${C[r].light};border-left-color:${C[r].bg}">
+          <div class="attn-title">${C[r].emoji} Week ${wk.w}: ${esc(wk.t)}</div>
+          ${comments[wk.w]?`<div class="attn-cmt">"${esc(comments[wk.w])}"</div>`:""}
+        </div>`;
+      });
+      html+=`</div>`;
+    }
+
+    html+=`<div class="card"><h3>All Ratings</h3><div class="grid">`;
+    W.forEach(wk=>{
+      let r=ratings[wk.w], bg=r?C[r].light:"#f8fafc", br=r?C[r].border:"#e2e8f0";
+      html+=`<div class="grid-item" style="background:${bg};border-color:${br}">
+        <div class="gi-t">${r?C[r].emoji:"⬜"} Wk ${wk.w}</div>
+        <div class="gi-s">${esc(wk.t)}</div>
+      </div>`;
+    });
+    html+=`</div></div>`;
+    html+=`<button class="reset-btn" onclick="handleReset()">Submit Another Response</button>`;
+  }
+
+  app.innerHTML=html;
+}
+
+function esc(s){return String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+
+async function handleSubmit(){
+  if(Object.keys(ratings).length<W.length||submitting) return;
+  submitting=true; render();
+
+  let payload={
+    timestamp:new Date().toISOString(),
+    studentName:(studentName||"").trim()||"Anonymous",
+    studentId:(studentId||"").trim()||"N/A",
+    greenCount:getCounts().green,
+    yellowCount:getCounts().yellow,
+    redCount:getCounts().red
+  };
+  W.forEach(wk=>{
+    payload["week"+wk.w+"_rating"]=ratings[wk.w]||"";
+    payload["week"+wk.w+"_comment"]=comments[wk.w]||"";
+  });
+
+  try{
+    await fetch(SCRIPT_URL,{method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    submitted=true; view="summary";
+  }catch(e){
+    app.innerHTML+=`<div class="err-box">Failed to submit. Please check your connection and try again.</div>`;
+  }
+  submitting=false; render();
+}
+
+function handleReset(){
+  ratings={}; comments={}; studentName=""; studentId="";
+  submitted=false; expanded=null; view="rate"; render();
+}
+
+render();
+</script>
+</body>
+</html>
